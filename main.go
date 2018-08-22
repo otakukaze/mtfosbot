@@ -2,11 +2,11 @@ package main
 
 import (
 	"log"
-	"os"
 	"strconv"
 	"strings"
 
 	"git.trj.tw/golang/mtfosbot/model"
+	"git.trj.tw/golang/mtfosbot/module/config"
 	"git.trj.tw/golang/mtfosbot/router/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -14,9 +14,9 @@ import (
 var server *gin.Engine
 
 func main() {
-	portNum, err := strconv.ParseUint(os.Getenv("PORT"), 10, 32)
-	if err != nil || portNum < 1024 || portNum > 65535 {
-		portNum = 10230
+	err := config.LoadConfig()
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	// create http server
@@ -29,5 +29,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	server.Run(strings.Join([]string{":", strconv.Itoa(int(portNum))}, ""))
+	server.Run(strings.Join([]string{":", strconv.Itoa(config.GetConf().Port)}, ""))
 }

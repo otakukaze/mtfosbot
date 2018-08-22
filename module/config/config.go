@@ -12,13 +12,34 @@ import (
 
 // Config -
 type Config struct {
-	Port      string `yaml:"port"`
+	Port      int    `yaml:"port"`
 	URL       string `yaml:"url"`
 	ImageRoot string `yaml:"image_root"`
 	Line      struct {
-		secret string `yaml:"secret"`
-		access string `yaml:"access"`
+		Secret string `yaml:"secret"`
+		Access string `yaml:"access"`
 	} `yaml:"line"`
+	Twitch struct {
+		ClientID     string `yaml:"client_id"`
+		ClientSecret string `yaml:"client_secret"`
+		SubSecret    string `yaml:"sub_secret"`
+		ChatHost     string `yaml:"chat_host"`
+		BotOauth     string `yaml:"bot_oauth"`
+	} `yaml:"twitch"`
+	Google struct {
+		APIKey string `yaml:"api_key"`
+	} `yaml:"google"`
+	Database struct {
+		Host string `yaml:"host"`
+		Port int    `yaml:"port"`
+		User string `yaml:"user"`
+		Pass string `yaml:"pass"`
+		DB   string `yaml:"dbname"`
+	} `yaml:"database"`
+	Redis struct {
+		Host string `yaml:"host"`
+		Port int    `yaml:"port"`
+	} `yaml:"redis"`
 }
 
 var conf *Config
@@ -54,4 +75,9 @@ func LoadConfig(p ...string) error {
 	}
 
 	return nil
+}
+
+// GetConf -
+func GetConf() *Config {
+	return conf
 }

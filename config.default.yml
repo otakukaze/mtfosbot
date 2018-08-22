@@ -1,0 +1,23 @@
+port: 10230
+url: ''
+image_root: './images'
+line:
+  secret: ''
+  access: ''
+twitch:
+  client_id: ''
+  client_secret: ''
+  sub_secret: ''
+  chat_host: ''
+  bot_oauth: ''
+google:
+  api_key: ''
+database:
+  host: 'localhost'
+  port: 5432
+  user: 'postgres'
+  pass: ''
+  dbname: 'mtfosbot'
+redis:
+  host: 'localhost'
+  port: 6379
