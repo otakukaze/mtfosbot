@@ -77,6 +77,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:1ecf2a49df33be51e757d0033d5d51d5f784f35f68e5a38f797b2d3f03357d71"
+  name = "golang.org/x/crypto"
+  packages = [
+    "bcrypt",
+    "blowfish",
+  ]
+  pruneopts = "UT"
+  revision = "614d502a4dac94afa3a6ce146bd1736da82514c6"
+
+[[projects]]
+  branch = "master"
   digest = "1:33a43cb31975899cfcd81600d1390467db1778ae87102f80668a753fed8c663e"
   name = "golang.org/x/sys"
   packages = ["unix"]
@@ -108,6 +119,7 @@
     "github.com/gin-gonic/gin/binding",
     "github.com/jmoiron/sqlx",
     "github.com/lib/pq",
+    "golang.org/x/crypto/bcrypt",
     "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"

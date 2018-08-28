@@ -14,7 +14,7 @@ var x *sqlx.DB
 func NewDB() (*sqlx.DB, error) {
 	var err error
 	connStr := fmt.Sprintf("user=%s host=%s sslmode=disable dbname=%s port=%d", "postgres", "localhost", "mtfosbot", 5432)
-	x, err := sqlx.Open("postgres", connStr)
+	x, err = sqlx.Connect("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}

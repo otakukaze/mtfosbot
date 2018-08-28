@@ -24,10 +24,11 @@ func main() {
 	routes.SetRoutes(server)
 
 	// connect to database
-	_, err = model.NewDB()
+	db, err := model.NewDB()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
 	server.Run(strings.Join([]string{":", strconv.Itoa(config.GetConf().Port)}, ""))
 }
