@@ -3,6 +3,8 @@ package api
 import (
 	"git.trj.tw/golang/mtfosbot/model"
 	"git.trj.tw/golang/mtfosbot/module/context"
+	"git.trj.tw/golang/mtfosbot/module/utils"
+	"github.com/gin-gonic/contrib/sessions"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -20,7 +22,7 @@ func UserLogin(c *context.Context) {
 
 	acc, err := model.GetAccount(bodyArg.Account)
 	if err != nil {
-		c.ServerError(nil)
+		c.ServerError(`account or password error`)
 		return
 	}
 
@@ -30,4 +32,13 @@ func UserLogin(c *context.Context) {
 		return
 	}
 
+	accInt := utils.ToMap(acc)
+	delete(accInt, "password")
+	session := sessions.Default(c.Context)
+
+	session.Set("user", accInt)
+	session.Set("loginType", "system")
+	session.Save()
+
+	c.Success(nil)
 }
