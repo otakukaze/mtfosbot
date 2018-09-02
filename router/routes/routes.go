@@ -26,7 +26,7 @@ func NewServ() *gin.Engine {
 	// enable cors
 	r.Use(cors.Default())
 	// session
-	r.Use(sessions.Sessions("gin:sess", store))
+	r.Use(sessions.Sessions("ginsess", store))
 
 	return r
 }
