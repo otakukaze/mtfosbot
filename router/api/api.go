@@ -42,3 +42,12 @@ func UserLogin(c *context.Context) {
 
 	c.Success(nil)
 }
+
+// UserLogout -
+func UserLogout(c *context.Context) {
+	session := sessions.Default(c.Context)
+	session.Clear()
+	session.Save()
+
+	c.Success(nil)
+}
