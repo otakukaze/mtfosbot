@@ -119,6 +119,14 @@
   version = "v0.0.3"
 
 [[projects]]
+  digest = "1:ed615c5430ecabbb0fb7629a182da65ecee6523900ac1ac932520860878ffcad"
+  name = "github.com/robfig/cron"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b41be1df696709bb6395fe435af20370037c0b4c"
+  version = "v1.1"
+
+[[projects]]
   digest = "1:03aa6e485e528acb119fb32901cf99582c380225fc7d5a02758e08b180cb56c3"
   name = "github.com/ugorji/go"
   packages = ["codec"]
@@ -171,6 +179,7 @@
     "github.com/gin-gonic/gin/binding",
     "github.com/jmoiron/sqlx",
     "github.com/lib/pq",
+    "github.com/robfig/cron",
     "golang.org/x/crypto/bcrypt",
     "gopkg.in/yaml.v2",
   ]
