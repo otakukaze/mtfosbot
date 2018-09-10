@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 
@@ -22,7 +23,7 @@ var idRegex = []*regexp.Regexp{
 type PageData struct {
 	ID   string
 	Text string
-	Time int
+	Time int32
 	Link string
 }
 
@@ -45,6 +46,13 @@ func readFacebookPage() {
 }
 
 func getPageHTML(page *model.FacebookPage) {
+	err := page.GetGroups()
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("get group fail")
+		return
+	}
+
 	resp, err := http.Get(fmt.Sprintf("https://www.facebook.com/%s", page.ID))
 	if err != nil {
 		return
@@ -88,7 +96,8 @@ func getPageHTML(page *model.FacebookPage) {
 		}
 		fmt.Printf("Time: %s / Text: %s / ID: %s \n", time, text, postID)
 
-		timeInt, err := strconv.Atoi(time)
+		timeInt, err := strconv.ParseInt(time, 10, 32)
+
 		if err != nil {
 			fmt.Println("convert time to int error")
 			return
@@ -100,7 +109,7 @@ func getPageHTML(page *model.FacebookPage) {
 		data := &PageData{
 			ID:   postID,
 			Text: text,
-			Time: timeInt,
+			Time: int32(timeInt),
 			Link: pageLink,
 		}
 
@@ -114,5 +123,10 @@ func getPageHTML(page *model.FacebookPage) {
 
 	sort.Sort(sort.Reverse(byTime(pageData)))
 
-	// lastData := pageData[0]
+	lastData := pageData[0]
+	t := int32(time.Now().Unix())
+
+	if lastData.Time+600 > t {
+
+	}
 }

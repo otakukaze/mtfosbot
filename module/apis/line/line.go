@@ -55,6 +55,9 @@ func getHeaders() map[string]string {
 
 // PushMessage -
 func PushMessage(target string, message interface{}) {
+	if len(target) == 0 {
+		return
+	}
 	url := "/v2/bot/message/push"
 
 	body := &pushBody{
@@ -75,6 +78,65 @@ func PushMessage(target string, message interface{}) {
 	default:
 		return
 	}
+	body.Messages = append(body.Messages, message)
+	dataByte, err := json.Marshal(body)
+	if err != nil {
+		fmt.Println("json encoding error")
+		return
+	}
+
+	byteReader := bytes.NewReader(dataByte)
+
+	apiUrl, ok := getUrl(url)
+	if !ok {
+		fmt.Println("url parser fail")
+		return
+	}
+
+	reqObj := apis.RequestObj{
+		Method:  "POST",
+		Url:     apiUrl,
+		Headers: getHeaders(),
+		Body:    byteReader,
+	}
+
+	req, err := apis.GetRequest(reqObj)
+	if err != nil {
+		return
+	}
+
+	_, err = http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Println("post api fail")
+		return
+	}
+}
+
+func RelayMessage(replyToken string, message interface{}) {
+	if len(replyToken) == 0 {
+		return
+	}
+	url := "/v2/bot/message/reply"
+
+	body := &replyBody{
+		ReplyToken: replyToken,
+	}
+
+	switch message.(type) {
+	case ImageMessage:
+		m := (message.(ImageMessage))
+		m.Type = "image"
+		message = m
+		break
+	case TextMessage:
+		m := (message.(TextMessage))
+		m.Type = "text"
+		message = m
+		break
+	default:
+		return
+	}
+
 	body.Messages = append(body.Messages, message)
 	dataByte, err := json.Marshal(body)
 	if err != nil {
