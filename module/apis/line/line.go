@@ -63,8 +63,14 @@ func PushMessage(target string, message interface{}) {
 
 	switch message.(type) {
 	case ImageMessage:
+		m := (message.(ImageMessage))
+		m.Type = "image"
+		message = m
 		break
 	case TextMessage:
+		m := (message.(TextMessage))
+		m.Type = "text"
+		message = m
 		break
 	default:
 		return
