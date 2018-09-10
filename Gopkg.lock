@@ -2,6 +2,22 @@
 
 
 [[projects]]
+  digest = "1:a62f6ed230a8cd138a9efbe718e7d0b0294f139266f5f55cd942769a9aac8de2"
+  name = "github.com/PuerkitoBio/goquery"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "dc2ec5c7ca4d9aae063b79b9f581dd3ea6afd2b2"
+  version = "v1.4.1"
+
+[[projects]]
+  digest = "1:66b3310cf22cdc96c35ef84ede4f7b9b370971c4025f394c89a2638729653b11"
+  name = "github.com/andybalholm/cascadia"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "901648c87902174f774fac311d7f176f8647bdaa"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:db932d4696ed23e244a69a60d258a23816aceb012a95e4c3871c711d4fc120e7"
   name = "github.com/boj/redistore"
   packages = ["."]
@@ -147,6 +163,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:a5ae8f624991c4156ab2610befdbc78ea3a961473ce4846cc34342649cb81878"
+  name = "golang.org/x/net"
+  packages = [
+    "html",
+    "html/atom",
+  ]
+  pruneopts = "UT"
+  revision = "161cd47e91fd58ac17490ef4d742dc98bb4cf60e"
+
+[[projects]]
+  branch = "master"
   digest = "1:33a43cb31975899cfcd81600d1390467db1778ae87102f80668a753fed8c663e"
   name = "golang.org/x/sys"
   packages = ["unix"]
@@ -173,6 +200,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/PuerkitoBio/goquery",
     "github.com/gin-contrib/cors",
     "github.com/gin-gonic/contrib/sessions",
     "github.com/gin-gonic/gin",

@@ -14,7 +14,7 @@ type Account struct {
 }
 
 // GetAllAccount -
-func GetAllAccount() (accs []Account, err error) {
+func GetAllAccount() (accs []*Account, err error) {
 	err = x.Select(&accs, "select * from public.account order by ctime asc")
 	if err != nil {
 		return nil, err

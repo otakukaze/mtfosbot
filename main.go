@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"git.trj.tw/golang/mtfosbot/model"
+	"git.trj.tw/golang/mtfosbot/module/background"
 	"git.trj.tw/golang/mtfosbot/module/config"
 	"git.trj.tw/golang/mtfosbot/router/routes"
 	"github.com/gin-gonic/gin"
@@ -18,6 +19,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	background.SetBackground()
 
 	// create http server
 	server = routes.NewServ()
