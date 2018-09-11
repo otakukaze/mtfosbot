@@ -26,3 +26,10 @@ func getHeaders(token string) map[string]string {
 	m["Authorization"] = fmt.Sprintf("Bearer %s", token)
 	return m
 }
+
+func GetUserData(token string) {
+	url, ok := getURL("/helix/users")
+	if !ok {
+		return
+	}
+}
