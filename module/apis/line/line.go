@@ -11,14 +11,17 @@ import (
 	"git.trj.tw/golang/mtfosbot/module/config"
 )
 
+// TextMessage - line text message object
 type TextMessage struct {
 	Type string `json:"type"`
 	Text string `json:"text"`
 }
+
+// ImageMessage - line image message object
 type ImageMessage struct {
 	Type               string `json:"type"`
-	OriginalContentUrl string `json:"originalContentUrl"`
-	PreviewImageUrl    string `json:"previewImageUrl"`
+	OriginalContentURL string `json:"originalContentUrl"`
+	PreviewImageURL    string `json:"previewImageUrl"`
 }
 
 type pushBody struct {
@@ -30,10 +33,10 @@ type replyBody struct {
 	Messages   []interface{} `json:"messages"`
 }
 
-var baseUrl = "https://api.line.me/"
+var baseURL = "https://api.line.me/"
 
-func getUrl(p string) (string, bool) {
-	u, err := url.Parse(baseUrl)
+func getURL(p string) (string, bool) {
+	u, err := url.Parse(baseURL)
 	if err != nil {
 		return "", false
 	}
@@ -87,7 +90,7 @@ func PushMessage(target string, message interface{}) {
 
 	byteReader := bytes.NewReader(dataByte)
 
-	apiUrl, ok := getUrl(url)
+	apiURL, ok := getURL(url)
 	if !ok {
 		fmt.Println("url parser fail")
 		return
@@ -95,7 +98,7 @@ func PushMessage(target string, message interface{}) {
 
 	reqObj := apis.RequestObj{
 		Method:  "POST",
-		Url:     apiUrl,
+		Url:     apiURL,
 		Headers: getHeaders(),
 		Body:    byteReader,
 	}
@@ -112,7 +115,8 @@ func PushMessage(target string, message interface{}) {
 	}
 }
 
-func RelayMessage(replyToken string, message interface{}) {
+// ReplyMessage -
+func ReplyMessage(replyToken string, message interface{}) {
 	if len(replyToken) == 0 {
 		return
 	}
@@ -146,7 +150,7 @@ func RelayMessage(replyToken string, message interface{}) {
 
 	byteReader := bytes.NewReader(dataByte)
 
-	apiUrl, ok := getUrl(url)
+	apiURL, ok := getURL(url)
 	if !ok {
 		fmt.Println("url parser fail")
 		return
@@ -154,7 +158,7 @@ func RelayMessage(replyToken string, message interface{}) {
 
 	reqObj := apis.RequestObj{
 		Method:  "POST",
-		Url:     apiUrl,
+		Url:     apiURL,
 		Headers: getHeaders(),
 		Body:    byteReader,
 	}

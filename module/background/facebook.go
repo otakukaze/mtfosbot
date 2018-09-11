@@ -6,11 +6,13 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
 
 	"git.trj.tw/golang/mtfosbot/model"
+	"git.trj.tw/golang/mtfosbot/module/apis/line"
 )
 
 var idRegex = []*regexp.Regexp{
@@ -20,6 +22,7 @@ var idRegex = []*regexp.Regexp{
 	regexp.MustCompile(`\/videos\/(\d+)`),
 }
 
+// PageData - facebook fan page data
 type PageData struct {
 	ID   string
 	Text string
@@ -126,7 +129,26 @@ func getPageHTML(page *model.FacebookPage) {
 	lastData := pageData[0]
 	t := int32(time.Now().Unix())
 
-	if lastData.Time+600 > t {
+	if (t-600) < lastData.Time && lastData.ID != page.LastPost {
+		err = page.UpdatePost(lastData.ID)
+		if err != nil {
+			return
+		}
 
+		for _, v := range page.Groups {
+			if v.Notify {
+				tmpl := v.Tmpl
+				if len(tmpl) > 0 {
+					tmpl = strings.Replace(tmpl, "{link}", lastData.Link, -1)
+					tmpl = strings.Replace(tmpl, "{txt}", lastData.Text, -1)
+				} else {
+					tmpl = fmt.Sprintf("%s\n%s", lastData.Text, lastData.Link)
+				}
+				msg := line.TextMessage{
+					Text: tmpl,
+				}
+				line.PushMessage(v.ID, msg)
+			}
+		}
 	}
 }
