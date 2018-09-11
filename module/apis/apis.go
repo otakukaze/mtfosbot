@@ -5,16 +5,18 @@ import (
 	"net/http"
 )
 
+// RequestObj -
 type RequestObj struct {
 	Method  string
-	Url     string
+	URL     string
 	Body    io.Reader
 	Headers map[string]string
 }
 
+// GetRequest -
 func GetRequest(r RequestObj) (req *http.Request, err error) {
 
-	req, err = http.NewRequest(r.Method, r.Url, r.Body)
+	req, err = http.NewRequest(r.Method, r.URL, r.Body)
 	if err != nil {
 		return
 	}

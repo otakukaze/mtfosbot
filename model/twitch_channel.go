@@ -12,3 +12,9 @@ type TwitchChannel struct {
 	Ctime      time.Time `db:"ctime" cc:"ctime"`
 	Mtime      time.Time `db:"mtime" cc:"ctime"`
 }
+
+// GetAllChannel -
+func GetAllChannel() (channels []*TwitchChannel, err error) {
+	err = x.Select(&channels, `select * from "public"."twitch_channel"`)
+	return
+}

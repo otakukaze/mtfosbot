@@ -10,5 +10,6 @@ var c *cron.Cron
 func SetBackground() {
 	c = cron.New()
 	c.AddFunc("0 * * * * *", readFacebookPage)
+	c.AddFunc("*/20 * * * * *", getStreamStatus)
 	c.Start()
 }

@@ -98,7 +98,7 @@ func PushMessage(target string, message interface{}) {
 
 	reqObj := apis.RequestObj{
 		Method:  "POST",
-		Url:     apiURL,
+		URL:     apiURL,
 		Headers: getHeaders(),
 		Body:    byteReader,
 	}
@@ -158,7 +158,7 @@ func ReplyMessage(replyToken string, message interface{}) {
 
 	reqObj := apis.RequestObj{
 		Method:  "POST",
-		Url:     apiURL,
+		URL:     apiURL,
 		Headers: getHeaders(),
 		Body:    byteReader,
 	}
