@@ -189,6 +189,14 @@
   version = "v8.18.2"
 
 [[projects]]
+  digest = "1:54c3b474a0e4a8e65c74e0dbb272bcf30a4bab48883d34f958cbb9d8e8ef387a"
+  name = "gopkg.in/irc.v2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4901bf6be124ba1558d3657e91286393c97fb47f"
+  version = "v2.1.2"
+
+[[projects]]
   digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -209,6 +217,7 @@
     "github.com/lib/pq",
     "github.com/robfig/cron",
     "golang.org/x/crypto/bcrypt",
+    "gopkg.in/irc.v2",
     "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"
