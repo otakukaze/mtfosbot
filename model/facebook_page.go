@@ -2,18 +2,19 @@ package model
 
 import "time"
 
-type FBGroups struct {
+// FBGroup -
+type FBGroup struct {
 	*LineGroup
 	Tmpl string `db:"tmpl"`
 }
 
 // FacebookPage - struct
 type FacebookPage struct {
-	ID       string      `db:"id" cc:"id"`
-	LastPost string      `db:"lastpost" cc:"lastpost"`
-	Ctime    time.Time   `db:"ctime" cc:"ctime"`
-	Mtime    time.Time   `db:"mtime" cc:"ctime"`
-	Groups   []*FBGroups `db:"-"`
+	ID       string     `db:"id" cc:"id"`
+	LastPost string     `db:"lastpost" cc:"lastpost"`
+	Ctime    time.Time  `db:"ctime" cc:"ctime"`
+	Mtime    time.Time  `db:"mtime" cc:"ctime"`
+	Groups   []*FBGroup `db:"-"`
 }
 
 // GetAllFacebookPage -
@@ -25,6 +26,7 @@ func GetAllFacebookPage() (pages []*FacebookPage, err error) {
 	return
 }
 
+// UpdatePost -
 func (p *FacebookPage) UpdatePost(postID string) (err error) {
 	query := `update "public"."facebook_page" set "lastpost" = $1 where id = $2`
 	_, err = x.Exec(query, postID, p.ID)
@@ -35,6 +37,7 @@ func (p *FacebookPage) UpdatePost(postID string) (err error) {
 	return
 }
 
+// GetGroups -
 func (p *FacebookPage) GetGroups() (err error) {
 	query := `select g.*, rt.tmpl as tmpl from "public"."facebook_page" p
 		left join "public"."line_fb_rt" rt
