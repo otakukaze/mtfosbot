@@ -8,6 +8,7 @@ import (
 	"git.trj.tw/golang/mtfosbot/model"
 	"git.trj.tw/golang/mtfosbot/module/background"
 	"git.trj.tw/golang/mtfosbot/module/config"
+	twitchirc "git.trj.tw/golang/mtfosbot/module/twitch-irc"
 	"git.trj.tw/golang/mtfosbot/router/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -32,6 +33,11 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	err = twitchirc.InitIRC()
+	if err != nil {
+		log.Println(err)
+	}
 
 	server.Run(strings.Join([]string{":", strconv.Itoa(config.GetConf().Port)}, ""))
 }

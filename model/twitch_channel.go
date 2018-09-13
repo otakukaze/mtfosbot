@@ -26,6 +26,12 @@ func GetAllTwitchChannel() (channels []*TwitchChannel, err error) {
 	return
 }
 
+// GetJoinChatChannel -
+func GetJoinChatChannel() (channels []*TwitchChannel, err error) {
+	err = x.Select(&channels, `select * from "public"."twitch_channel" where "join" = true`)
+	return
+}
+
 // UpdateStream -
 func (p *TwitchChannel) UpdateStream(streamID string) (err error) {
 	query := `update "public"."twitch_channel" set "laststream" = $1 where "id" = $2`

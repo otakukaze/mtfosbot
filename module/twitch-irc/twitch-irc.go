@@ -36,6 +36,26 @@ func InitIRC() (err error) {
 	return
 }
 
+// SendMessage -
+func SendMessage(ch, msg string) {
+	if len(ch) == 0 {
+		return
+	}
+
+	if indexOf(channels, ch) == -1 {
+		return
+	}
+
+	m := &MsgObj{
+		Command: "PRIVMSG",
+		Params: []string{
+			fmt.Sprintf("#%s", ch),
+			fmt.Sprintf(":%s", msg),
+		},
+	}
+	queue.Add(m)
+}
+
 // JoinChannel -
 func JoinChannel(ch string) {
 	if len(ch) == 0 {
@@ -88,21 +108,29 @@ func runQueue() {
 			msg := &irc.Message{}
 			msg.Command = m.Command
 			msg.Params = m.Params
-			err := client.WriteMessage(msg)
-			if err == nil {
-				if m.Command == "JOIN" {
 
-				} else if m.Command == "PART" {
-
+			if m.Command == "JOIN" {
+				if indexOf(channels, m.Params[0][1:]) != -1 {
+					continue
 				}
+				channels = append(channels, m.Params[0][1:])
+			} else if m.Command == "PART" {
+				if indexOf(channels, m.Params[0][1:]) == -1 {
+					continue
+				}
+				idx := indexOf(channels, m.Params[0][1:])
+				channels = append(channels[:idx], channels[idx+1:]...)
 			}
+			fmt.Println("< ", msg.String())
+			client.WriteMessage(msg)
 		}
+
 		time.Sleep(time.Microsecond * 1500)
 	}
 }
 
 func ircHandle(c *irc.Client, m *irc.Message) {
-
+	fmt.Println("> ", m.String())
 }
 
 func indexOf(c []string, data string) int {
