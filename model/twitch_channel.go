@@ -32,6 +32,16 @@ func GetJoinChatChannel() (channels []*TwitchChannel, err error) {
 	return
 }
 
+// Add -
+func (p *TwitchChannel) Add() (err error) {
+	rows, err := x.NamedQuery(`insert into "public"."twitch_channel" ("name", "laststream", "join", "opayid") values (:name, :laststream, :join, :opayid) returning *`, p)
+	if err != nil {
+		return err
+	}
+	err = rows.StructScan(p)
+	return
+}
+
 // UpdateStream -
 func (p *TwitchChannel) UpdateStream(streamID string) (err error) {
 	query := `update "public"."twitch_channel" set "laststream" = $1 where "id" = $2`

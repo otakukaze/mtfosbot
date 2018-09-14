@@ -26,6 +26,22 @@ func GetAllFacebookPage() (pages []*FacebookPage, err error) {
 	return
 }
 
+// GetFacebookPage -
+func GetFacebookPage(id string) (page *FacebookPage, err error) {
+	err = x.Get(&page, `select * from "public"."facebook_page" where "id" = $1`, id)
+	return
+}
+
+// AddPage -
+func (p *FacebookPage) AddPage() (err error) {
+	rows, err := x.NamedQuery(`insert into "public"."facebook_page" ("id", "lastpost") values (:id, :lastpost) returning *`, p)
+	if err != nil {
+		return err
+	}
+	err = rows.StructScan(&p)
+	return
+}
+
 // UpdatePost -
 func (p *FacebookPage) UpdatePost(postID string) (err error) {
 	query := `update "public"."facebook_page" set "lastpost" = $1 where id = $2`

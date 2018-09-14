@@ -73,13 +73,6 @@ func JoinChannel(ch string) {
 		},
 	}
 	queue.Add(m)
-
-	// msg := &irc.Message{}
-	// msg.Command = "JOIN"
-	// msg.Params = []string{
-	// 	fmt.Sprintf("#%s", ch),
-	// }
-	// client.WriteMessage(msg)
 }
 
 // LeaveChannel -

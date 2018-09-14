@@ -15,8 +15,8 @@ type KeyCommands struct {
 	Mtime   time.Time `db:"mtime" cc:"ctime"`
 }
 
-// GetKeyCommand -
-func GetKeyCommand(c, g string) (cmd *KeyCommands, err error) {
+// GetGroupKeyCommand -
+func GetGroupKeyCommand(c, g string) (cmd *KeyCommands, err error) {
 	if len(c) == 0 {
 		return nil, errors.New("command is empty")
 	}

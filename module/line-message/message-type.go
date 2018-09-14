@@ -2,6 +2,7 @@ package linemsg
 
 import (
 	lineobj "git.trj.tw/golang/mtfosbot/module/line-message/line-object"
+	msgcmd "git.trj.tw/golang/mtfosbot/module/message-command"
 )
 
 func messageType(e *lineobj.EventObject) {
@@ -31,8 +32,8 @@ func textMsg(e *lineobj.EventObject) {
 
 	// group action
 	if e.Source.Type == "group" {
-		if _, ok := mtxt.(string); ok {
-
+		if txt, ok := mtxt.(string); ok {
+			msgcmd.ParseLineMsg(txt, e.ReplyToken, e.Source)
 		}
 	}
 	return
