@@ -34,10 +34,7 @@ func main() {
 	}
 	defer db.Close()
 
-	err = twitchirc.InitIRC()
-	if err != nil {
-		log.Println(err)
-	}
+	go twitchirc.InitIRC()
 
 	server.Run(strings.Join([]string{":", strconv.Itoa(config.GetConf().Port)}, ""))
 }

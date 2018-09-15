@@ -1,8 +1,8 @@
 package twitchirc
 
 import (
+	"crypto/tls"
 	"fmt"
-	"net"
 	"time"
 
 	"gopkg.in/irc.v2"
@@ -15,25 +15,32 @@ var queue *QueueList
 var channels []string
 
 // InitIRC -
-func InitIRC() (err error) {
+func InitIRC() {
 	conf := config.GetConf()
-	conn, err := net.Dial("tcp", conf.Twitch.ChatHost)
+	tlsConf := &tls.Config{}
+	conn, err := tls.Dial("tcp", conf.Twitch.ChatHost, tlsConf)
+	// conn, err := net.Dial("tcp", conf.Twitch.ChatHost)
 	if err != nil {
 		return
 	}
+	defer conn.Close()
+
+	channels = make([]string, 0)
+	queue = NewQueue()
+	runQueue()
+
 	config := irc.ClientConfig{
+		Nick:    "mtfos",
+		Pass:    conf.Twitch.BotOauth,
 		Handler: irc.HandlerFunc(ircHandle),
 	}
 
 	client = irc.NewClient(conn, config)
 
 	err = client.Run()
-
-	queue = NewQueue()
-	go runQueue()
-
-	channels = make([]string, 0)
-	return
+	if err != nil {
+		fmt.Println("twitch chat connect fail")
+	}
 }
 
 // SendMessage -
@@ -94,32 +101,51 @@ func LeaveChannel(ch string) {
 	queue.Add(m)
 }
 
-func runQueue() {
-	for {
-		if !queue.IsEmpty() {
-			m := queue.Get()
-			msg := &irc.Message{}
-			msg.Command = m.Command
-			msg.Params = m.Params
-
-			if m.Command == "JOIN" {
-				if indexOf(channels, m.Params[0][1:]) != -1 {
-					continue
-				}
-				channels = append(channels, m.Params[0][1:])
-			} else if m.Command == "PART" {
-				if indexOf(channels, m.Params[0][1:]) == -1 {
-					continue
-				}
-				idx := indexOf(channels, m.Params[0][1:])
-				channels = append(channels[:idx], channels[idx+1:]...)
-			}
-			fmt.Println("< ", msg.String())
-			client.WriteMessage(msg)
+// LeaveAllChannel -
+func LeaveAllChannel() {
+	for _, v := range channels {
+		m := &MsgObj{
+			Command: "PART",
+			Params: []string{
+				fmt.Sprintf("#%s", v),
+			},
 		}
-
-		time.Sleep(time.Microsecond * 1500)
+		queue.Add(m)
 	}
+}
+
+func runQueue() {
+	go func() {
+		cnt := 0
+		for {
+			if !queue.IsEmpty() {
+				m := queue.Get()
+				msg := &irc.Message{}
+				msg.Command = m.Command
+				msg.Params = m.Params
+
+				if m.Command == "JOIN" {
+					if indexOf(channels, m.Params[0][1:]) != -1 {
+						continue
+					}
+					channels = append(channels, m.Params[0][1:])
+				} else if m.Command == "PART" {
+					if indexOf(channels, m.Params[0][1:]) == -1 {
+						continue
+					}
+					idx := indexOf(channels, m.Params[0][1:])
+					channels = append(channels[:idx], channels[idx+1:]...)
+				}
+				fmt.Println("< ", msg.String())
+				client.WriteMessage(msg)
+			}
+			cnt++
+			if cnt > 1800 {
+				// call rejoin
+			}
+			time.Sleep(time.Second * 1)
+		}
+	}()
 }
 
 func ircHandle(c *irc.Client, m *irc.Message) {
