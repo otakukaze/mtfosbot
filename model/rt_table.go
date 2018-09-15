@@ -25,14 +25,42 @@ func (p *LineFacebookRT) AddRT() (err error) {
 	return
 }
 
+// DelRT -
+func (p *LineFacebookRT) DelRT() (err error) {
+	_, err = x.NamedExec(`delete from "public"."line_fb_rt" where "line" = :line and "facebook" = :facebook`, p)
+	return
+}
+
+// GetRT -
+func (p *LineFacebookRT) GetRT() (err error) {
+	stmt, err := x.PrepareNamed(`select * from "public"."line_fb_rt" where "line" = :line and "facebook" = :facebook`)
+	if err != nil {
+		return err
+	}
+	err = stmt.Get(p, p)
+	return
+}
+
 // AddRT - add twitch line rt
 func (p *LineTwitchRT) AddRT() (err error) {
 	_, err = x.NamedExec(`insert into "public"."line_twitch_rt" ("line", "twitch", "type", "tmpl") values (:line, :twitch, :type, :tmpl)`, p)
 	return
 }
 
+// DelRT -
+func (p *LineTwitchRT) DelRT() (err error) {
+	_, err = x.NamedExec(`delete from "public"."line_twitch_rt" where "line" = :line and "twitch" = :twitch and "type" = :type`, p)
+	return
+}
+
 // AddRT - add youtube line rt
 func (p *LineYoutubeRT) AddRT() (err error) {
 	_, err = x.NamedExec(`insert into "public"."line_youtube_rt" ("line", "youtube", "tmpl") values (:line, :youtube, :tmpl)`, p)
+	return
+}
+
+// DelRT -
+func (p *LineYoutubeRT) DelRT() (err error) {
+	_, err = x.NamedExec(`delete from "public"."line_youtube_rt" where "line" = :line and "youtube" = :youtube`, p)
 	return
 }

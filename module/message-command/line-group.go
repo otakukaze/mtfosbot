@@ -18,6 +18,10 @@ func selectAct(cmd, sub, txt string, s *lineobj.SourceObject) (res string) {
 		return addFacebookPage(sub, txt, s)
 	case "addtwitch":
 		return addTwitchChannel(sub, txt, s)
+	case "delpage":
+		return delFacebookPage(sub, txt, s)
+	case "deltwitch":
+		return delTwitchChannel(sub, txt, s)
 	}
 	return
 }
@@ -48,18 +52,29 @@ func addLineGroup(sub, txt string, s *lineobj.SourceObject) (res string) {
 	return "Success"
 }
 
-func addFacebookPage(sub, txt string, s *lineobj.SourceObject) (res string) {
-	// args = pageid tmpl
+func checkGroupOwner(s *lineobj.SourceObject) (ok bool, err error) {
 	exists, err := model.CheckGroup(s.GroupID)
 	if err != nil {
-		return "run check group error"
+		return false, err
 	}
 	if !exists {
-		return "group not exists"
+		return false, nil
 	}
-	ok, err := model.CheckGroupOwner(s.UserID, s.GroupID)
+	ok, err = model.CheckGroupOwner(s.UserID, s.GroupID)
 	if err != nil {
-		return "run check group owner fail"
+		return false, err
+	}
+	if !ok {
+		return false, nil
+	}
+	return true, nil
+}
+
+func addFacebookPage(sub, txt string, s *lineobj.SourceObject) (res string) {
+	// args = pageid tmpl
+	ok, err := checkGroupOwner(s)
+	if err != nil {
+		return "check group fail"
 	}
 	if !ok {
 		return "not owner"
@@ -98,18 +113,47 @@ func addFacebookPage(sub, txt string, s *lineobj.SourceObject) (res string) {
 	return "Success"
 }
 
+func delFacebookPage(sub, txt string, s *lineobj.SourceObject) (res string) {
+	// args = pageid
+	ok, err := checkGroupOwner(s)
+	if err != nil {
+		return "check group fail"
+	}
+	if !ok {
+		return "not owner"
+	}
+
+	args := strings.Split(strings.Trim(txt, " "), " ")
+	if len(args) < 1 {
+		return "commage arg not match"
+	}
+
+	rt := &model.LineFacebookRT{
+		Line:     s.GroupID,
+		Facebook: args[0],
+	}
+	err = rt.DelRT()
+	if err != nil {
+		return "remove facebook page fail"
+	}
+
+	return "Success"
+}
+
+func checkTwitchType(t string) bool {
+	switch t {
+	case "live":
+	default:
+		return false
+	}
+	return true
+}
+
 func addTwitchChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 	// args = twitchLogin type tmpl
-	exists, err := model.CheckGroup(s.GroupID)
+	ok, err := checkGroupOwner(s)
 	if err != nil {
-		return "run check group error"
-	}
-	if !exists {
-		return "group not exists"
-	}
-	ok, err := model.CheckGroupOwner(s.UserID, s.GroupID)
-	if err != nil {
-		return "run check group owner fail"
+		return "check group fail"
 	}
 	if !ok {
 		return "not owner"
@@ -118,6 +162,10 @@ func addTwitchChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 	args := strings.Split(strings.Trim(txt, " "), " ")
 	if len(args) < 3 {
 		return "command args not match"
+	}
+
+	if !checkTwitchType(args[1]) {
+		return "type not allow"
 	}
 
 	info := twitch.GetUserDataByName(args[0])
@@ -137,11 +185,56 @@ func addTwitchChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 	rt := &model.LineTwitchRT{
 		Line:   s.GroupID,
 		Twitch: info.ID,
+		Type:   args[1],
 		Tmpl:   strings.Join(args[2:], " "),
 	}
 	err = rt.AddRT()
 	if err != nil {
 		return "add rt data fail"
+	}
+
+	return "Success"
+}
+
+func delTwitchChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
+	// args = twitchLogin type
+	ok, err := checkGroupOwner(s)
+	if err != nil {
+		return "check group fail"
+	}
+	if !ok {
+		return "not owner"
+	}
+
+	args := strings.Split(strings.Trim(txt, " "), " ")
+	if len(args) < 2 {
+		return "command arg not match"
+	}
+
+	if !checkTwitchType(args[1]) {
+		return "type not allow"
+	}
+
+	ch := &model.TwitchChannel{
+		Name: args[0],
+	}
+	err = ch.GetWithName()
+	if err != nil {
+		return "get channel data fail"
+	}
+	if ch == nil {
+		return "Success"
+	}
+
+	rt := &model.LineTwitchRT{
+		Line:   s.GroupID,
+		Twitch: ch.ID,
+		Type:   args[1],
+	}
+
+	err = rt.DelRT()
+	if err != nil {
+		return "delete rt fail"
 	}
 
 	return "Success"

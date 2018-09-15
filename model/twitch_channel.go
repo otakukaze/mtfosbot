@@ -32,13 +32,24 @@ func GetJoinChatChannel() (channels []*TwitchChannel, err error) {
 	return
 }
 
-// Add -
-func (p *TwitchChannel) Add() (err error) {
-	rows, err := x.NamedQuery(`insert into "public"."twitch_channel" ("name", "laststream", "join", "opayid") values (:name, :laststream, :join, :opayid) returning *`, p)
+// GetWithName -
+func (p *TwitchChannel) GetWithName() (err error) {
+	stmt, err := x.PrepareNamed(`select * from "public"."twitch_channel" where "name" = :name`)
 	if err != nil {
 		return err
 	}
-	err = rows.StructScan(p)
+
+	err = stmt.Get(p, p)
+	return
+}
+
+// Add -
+func (p *TwitchChannel) Add() (err error) {
+	stmt, err := x.PrepareNamed(`insert into "public"."twitch_channel" ("name", "laststream", "join", "opayid") values (:name, :laststream, :join, :opayid) returning *`)
+	if err != nil {
+		return err
+	}
+	err = stmt.Get(p, p)
 	return
 }
 

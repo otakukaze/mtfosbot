@@ -1,0 +1,135 @@
+package google
+
+import (
+	"encoding/xml"
+	"fmt"
+	"io/ioutil"
+	"strings"
+	"time"
+
+	"git.trj.tw/golang/mtfosbot/model"
+	lineapi "git.trj.tw/golang/mtfosbot/module/apis/line"
+	"git.trj.tw/golang/mtfosbot/module/context"
+)
+
+type feed struct {
+	XMLName xml.Name `xml:"feed"`
+	Entry   []entry  `xml:"entry"`
+}
+type entry struct {
+	XMLName xml.Name `xml:"entry"`
+	Title   string   `xml:"title"`
+	ID      string   `xml:"id"`
+	Link    link     `xml:"link"`
+	Author  []author `xml:"author"`
+}
+type link struct {
+	XMLName xml.Name `xml:"link"`
+	Href    string   `xml:"href,attr"`
+}
+type author struct {
+	XMLName xml.Name `xml:"author"`
+	Name    string   `xml:"name"`
+	URI     string   `xml:"uri"`
+}
+
+// VerifyWebhook -
+func VerifyWebhook(c *context.Context) {
+	hubMode, ok := c.GetQuery("hub.mode")
+	if !ok {
+		c.DataFormat(nil)
+		return
+	}
+	challenge, ok := c.GetQuery("hub.challenge")
+	if !ok {
+		c.DataFormat(nil)
+		return
+	}
+	id, ok := c.GetQuery("id")
+	if !ok {
+		c.DataFormat(nil)
+		return
+	}
+	if hubMode == "subscribe" {
+		t := time.Now().Unix() + 86400
+		yt, err := model.GetYoutubeChannelWithID(id)
+		if err != nil {
+			c.ServerError(nil)
+			return
+		}
+		if yt == nil {
+			c.NotFound("channel not found")
+			return
+		}
+		err = yt.UpdateExpire(t)
+		if err != nil {
+			c.ServerError(nil)
+		}
+	}
+	c.String(200, challenge)
+}
+
+// GetNotifyWebhook -
+func GetNotifyWebhook(c *context.Context) {
+	byteBody, err := ioutil.ReadAll(c.Request.Body)
+	defer c.Request.Body.Close()
+	if err != nil {
+		c.DataFormat(nil)
+		return
+	}
+
+	id, ok := c.GetQuery("id")
+	if !ok {
+		c.DataFormat(nil)
+		return
+	}
+
+	hook := &feed{}
+	err = xml.Unmarshal(byteBody, &hook)
+	if err != nil {
+		c.DataFormat(nil)
+		return
+	}
+
+	if len(hook.Entry) == 0 {
+		c.Success(nil)
+		return
+	}
+
+	yt, err := model.GetYoutubeChannelWithID(id)
+	if err != nil || yt == nil {
+		c.ServerError(nil)
+		return
+	}
+
+	if hook.Entry[0].ID == yt.LastVideo {
+		c.Success(nil)
+		return
+	}
+
+	err = yt.UpdateLastVideo(hook.Entry[0].ID)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+
+	for _, v := range yt.Groups {
+		if v.Notify {
+			str := v.Tmpl
+			if len(str) == 0 {
+				str = fmt.Sprintf("%s\n%s", hook.Entry[0].Title, hook.Entry[0].Link.Href)
+			} else {
+				str = strings.Replace(str, "{link}", hook.Entry[0].Link.Href, -1)
+				str = strings.Replace(str, "{txt}", hook.Entry[0].Title, -1)
+			}
+
+			msg := &lineapi.TextMessage{
+				Text: str,
+			}
+
+			lineapi.PushMessage(v.ID, msg)
+		}
+	}
+
+	c.Success(nil)
+}

@@ -34,11 +34,11 @@ func GetFacebookPage(id string) (page *FacebookPage, err error) {
 
 // AddPage -
 func (p *FacebookPage) AddPage() (err error) {
-	rows, err := x.NamedQuery(`insert into "public"."facebook_page" ("id", "lastpost") values (:id, :lastpost) returning *`, p)
+	stmt, err := x.PrepareNamed(`insert into "public"."facebook_page" ("id", "lastpost") values (:id, :lastpost) returning *`)
 	if err != nil {
 		return err
 	}
-	err = rows.StructScan(&p)
+	err = stmt.Get(p, p)
 	return
 }
 
