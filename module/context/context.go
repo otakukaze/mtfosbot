@@ -35,6 +35,12 @@ func (c *Context) CustomRes(status int, msg interface{}) {
 	c.AbortWithStatusJSON(status, msg)
 }
 
+// LoginFirst -
+func (c *Context) LoginFirst(msg interface{}) {
+	obj := apimsg.GetRes("LoginFirst", msg)
+	c.AbortWithStatusJSON(obj.Status, obj.Obj)
+}
+
 // NotFound -
 func (c *Context) NotFound(msg interface{}) {
 	obj := apimsg.GetRes("NotFound", msg)

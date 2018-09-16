@@ -7,6 +7,7 @@ import (
 	"git.trj.tw/golang/mtfosbot/router/api"
 	"git.trj.tw/golang/mtfosbot/router/google"
 	"git.trj.tw/golang/mtfosbot/router/line"
+	"git.trj.tw/golang/mtfosbot/router/twitch"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -44,6 +45,7 @@ func SetRoutes(r *gin.Engine) {
 	apiGroup := r.Group("/api")
 	{
 		apiGroup.POST("/login", context.PatchCtx(api.UserLogin))
+		apiGroup.POST("/logout", context.PatchCtx(api.UserLogout))
 	}
 
 	lineApis := r.Group("/line")
@@ -55,5 +57,11 @@ func SetRoutes(r *gin.Engine) {
 	{
 		googleApis.GET("/youtube/webhook", context.PatchCtx(google.VerifyWebhook))
 		googleApis.POST("/youtube/webhook", context.PatchCtx(google.GetNotifyWebhook))
+	}
+
+	twitchApis := r.Group("/twitch")
+	{
+		twitchApis.GET("/login", context.PatchCtx(twitch.OAuthLogin))
+		twitchApis.GET("/oauth", context.PatchCtx(twitch.OAuthProc))
 	}
 }

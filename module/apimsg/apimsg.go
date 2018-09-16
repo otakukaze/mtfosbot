@@ -37,6 +37,12 @@ var objs = map[string]*ResObject{
 			"message": "input data format error",
 		},
 	},
+	"LoginFirst": &ResObject{
+		Status: 401,
+		Obj: map[string]string{
+			"message": "login first",
+		},
+	},
 }
 
 // GetRes -

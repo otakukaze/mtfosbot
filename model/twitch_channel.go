@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 // TwitchGroup -
 type TwitchGroup struct {
@@ -32,6 +35,24 @@ func GetJoinChatChannel() (channels []*TwitchChannel, err error) {
 	return
 }
 
+// GetTwitchChannelWithName -
+func GetTwitchChannelWithName(name string) (ch *TwitchChannel, err error) {
+	if len(name) == 0 {
+		return nil, errors.New("name empty")
+	}
+	err = x.Get(&ch, `select * from "public"."twitch_channel" where "name" = $1`, name)
+	return
+}
+
+// GetTwitchChannelWithID -
+func GetTwitchChannelWithID(id string) (ch *TwitchChannel, err error) {
+	if len(id) == 0 {
+		return nil, errors.New("id empty")
+	}
+	err = x.Get(&ch, `select * from "public"."twitch_channel" where "id" = $1`, id)
+	return
+}
+
 // GetWithName -
 func (p *TwitchChannel) GetWithName() (err error) {
 	stmt, err := x.PrepareNamed(`select * from "public"."twitch_channel" where "name" = :name`)
@@ -45,7 +66,7 @@ func (p *TwitchChannel) GetWithName() (err error) {
 
 // Add -
 func (p *TwitchChannel) Add() (err error) {
-	stmt, err := x.PrepareNamed(`insert into "public"."twitch_channel" ("name", "laststream", "join", "opayid") values (:name, :laststream, :join, :opayid) returning *`)
+	stmt, err := x.PrepareNamed(`insert into "public"."twitch_channel" ("id", "name", "laststream", "join", "opayid") values (:id, :name, :laststream, :join, :opayid) returning *`)
 	if err != nil {
 		return err
 	}
@@ -61,6 +82,16 @@ func (p *TwitchChannel) UpdateStream(streamID string) (err error) {
 		return
 	}
 	p.LastStream = streamID
+	return
+}
+
+// UpdateName -
+func (p *TwitchChannel) UpdateName(name string) (err error) {
+	_, err = x.Exec(`update "public"."twitch_channel" set "name" = $1 where "id" = $2`, name, p.ID)
+	if err != nil {
+		return
+	}
+	p.Name = name
 	return
 }
 

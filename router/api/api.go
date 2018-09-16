@@ -2,11 +2,46 @@ package api
 
 import (
 	"git.trj.tw/golang/mtfosbot/model"
+	"git.trj.tw/golang/mtfosbot/module/apis/twitch"
 	"git.trj.tw/golang/mtfosbot/module/context"
-	"git.trj.tw/golang/mtfosbot/module/utils"
 	"github.com/gin-gonic/contrib/sessions"
 	"golang.org/x/crypto/bcrypt"
 )
+
+// CheckSession -
+func CheckSession(c *context.Context) {
+	session := sessions.Default(c.Context)
+	userData := session.Get("user")
+	loginType := session.Get("loginType")
+	if userData == nil || loginType == nil {
+		c.LoginFirst(nil)
+		return
+	}
+	var name string
+	var ltype string
+	var ok bool
+	switch userData.(type) {
+	case model.Account:
+		name = userData.(model.Account).Account
+	case twitch.UserInfo:
+		name = userData.(twitch.UserInfo).DisplayName
+	default:
+		c.LoginFirst(nil)
+		return
+	}
+	if ltype, ok = loginType.(string); !ok {
+		c.LoginFirst(nil)
+		return
+	}
+
+	loginUser := map[string]string{
+		"name": name,
+		"type": ltype,
+	}
+	session.Set("loginUser", loginUser)
+	session.Save()
+	c.Next()
+}
 
 // UserLogin - system user login
 func UserLogin(c *context.Context) {
@@ -32,11 +67,10 @@ func UserLogin(c *context.Context) {
 		return
 	}
 
-	accInt := utils.ToMap(acc)
-	delete(accInt, "password")
 	session := sessions.Default(c.Context)
 
-	session.Set("user", accInt)
+	acc.Password = ""
+	session.Set("user", acc)
 	session.Set("loginType", "system")
 	session.Save()
 

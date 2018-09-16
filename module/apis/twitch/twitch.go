@@ -2,6 +2,7 @@ package twitch
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -233,4 +234,67 @@ func GetUserStreamStatus(ids []string) (info []*StreamInfo) {
 	}
 
 	return apiData.Data
+}
+
+// TwitchTokenData -
+type TwitchTokenData struct {
+	AccessToken  string `json:"access_token" cc:"access_token"`
+	RefreshToken string `json:"refresh_token" cc:"refresh_token"`
+	ExpiresIn    int64  `json:"expires_in" cc:"expires_in"`
+	Scope        string `json:"scope" cc:"scope"`
+	TokenType    string `json:"token_type" cc:"token_type"`
+}
+
+// GetTokenData -
+func GetTokenData(code string) (token *TwitchTokenData, err error) {
+	if len(code) == 0 {
+		return nil, errors.New("code is empty")
+	}
+	conf := config.GetConf()
+	twitchURL := "https://id.twitch.tv/oauth2/token"
+	redirectTo := strings.TrimRight(conf.URL, "/") + "/twitch/oauth"
+
+	qs := url.Values{}
+	qs.Add("client_id", conf.Twitch.ClientID)
+	qs.Add("client_secret", conf.Twitch.ClientSecret)
+	qs.Add("code", code)
+	qs.Add("grant_type", "authorization_code")
+	qs.Add("redirect_uri", redirectTo)
+
+	u, err := url.Parse(twitchURL)
+	if err != nil {
+		return nil, err
+	}
+	u, err = u.Parse(qs.Encode())
+	if err != nil {
+		return nil, err
+	}
+
+	reqObj := apis.RequestObj{
+		URL:    u.String(),
+		Method: "POST",
+	}
+	req, err := apis.GetRequest(reqObj)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 || strings.HasPrefix(resp.Header.Get("Content-Type"), "application/json") {
+		return nil, errors.New("api response error")
+	}
+
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(bodyBytes, &token)
+
+	return
 }

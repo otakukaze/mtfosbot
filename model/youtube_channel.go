@@ -25,6 +25,16 @@ func GetYoutubeChannelWithID(id string) (yt *YoutubeChannel, err error) {
 	return
 }
 
+// Add -
+func (p *YoutubeChannel) Add() (err error) {
+	stmt, err := x.PrepareNamed(`insert into "public"."youtube_channel" ("id", "name") values (:id, :name) returning *`)
+	if err != nil {
+		return err
+	}
+	err = stmt.Get(p, p)
+	return
+}
+
 // UpdateLastVideo -
 func (p *YoutubeChannel) UpdateLastVideo(vid string) (err error) {
 	p.LastVideo = vid

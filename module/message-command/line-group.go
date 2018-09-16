@@ -7,6 +7,7 @@ import (
 	"git.trj.tw/golang/mtfosbot/module/apis/twitch"
 
 	"git.trj.tw/golang/mtfosbot/model"
+	googleapi "git.trj.tw/golang/mtfosbot/module/apis/google"
 	lineobj "git.trj.tw/golang/mtfosbot/module/line-message/line-object"
 )
 
@@ -173,13 +174,19 @@ func addTwitchChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 		return "get twitch user id fail"
 	}
 
-	ch := &model.TwitchChannel{
-		ID:   info.ID,
-		Name: info.DisplayName,
-	}
-	err = ch.Add()
+	ch, err := model.GetTwitchChannelWithName(args[0])
 	if err != nil {
-		return "add twitch channel fail"
+		return "check channel fail"
+	}
+	if ch == nil {
+		ch = &model.TwitchChannel{
+			ID:   info.ID,
+			Name: info.DisplayName,
+		}
+		err = ch.Add()
+		if err != nil {
+			return "add twitch channel fail"
+		}
 	}
 
 	rt := &model.LineTwitchRT{
@@ -235,6 +242,53 @@ func delTwitchChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 	err = rt.DelRT()
 	if err != nil {
 		return "delete rt fail"
+	}
+
+	return "Success"
+}
+
+func addYoutubeChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
+	// args = youtubeID tmpl
+	ok, err := checkGroupOwner(s)
+	if err != nil {
+		return "check group fail"
+	}
+	if !ok {
+		return "not owner"
+	}
+
+	args := strings.Split(strings.Trim(txt, " "), " ")
+	if len(args) < 2 {
+		return "command arg not match"
+	}
+	ytName, err := googleapi.QueryYoutubeName(args[0])
+	if err != nil || len(ytName) == 0 {
+		return "get youtube channel name fail"
+	}
+
+	ytData, err := model.GetYoutubeChannelWithID(args[0])
+	if err != nil {
+		return "check youtube fail"
+	}
+	if ytData == nil {
+		ytData = &model.YoutubeChannel{
+			ID:   args[0],
+			Name: ytName,
+		}
+		err = ytData.Add()
+		if err != nil {
+			return "add youtube channel fail"
+		}
+	}
+
+	rt := &model.LineYoutubeRT{
+		Line:    s.GroupID,
+		Youtube: args[0],
+		Tmpl:    strings.Join(args[1:], " "),
+	}
+	err = rt.AddRT()
+	if err != nil {
+		return "add youtube channel rt fail"
 	}
 
 	return "Success"
