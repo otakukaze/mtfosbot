@@ -19,6 +19,18 @@ type YoutubeChannel struct {
 	Groups    []*YoutubeGroup `db:"-"`
 }
 
+// GetAllYoutubeChannels -
+func GetAllYoutubeChannels() (yt []*YoutubeChannel, err error) {
+	err = x.Select(&yt, `select * from "public"."youtube_channel"`)
+	return
+}
+
+// GetYoutubeChannelsWithExpire -
+func GetYoutubeChannelsWithExpire(e int64) (yt []*YoutubeChannel, err error) {
+	err = x.Select(&yt, `select * from "public"."youtube_channel" where "expire" = -1 or "expire" < $1`, e)
+	return
+}
+
 // GetYoutubeChannelWithID -
 func GetYoutubeChannelWithID(id string) (yt *YoutubeChannel, err error) {
 	err = x.Get(&yt, `select * from "public"."youtube_channel" where "id" = $1`, id)

@@ -12,5 +12,6 @@ func SetBackground() {
 	c.AddFunc("0 * * * * *", readFacebookPage)
 	c.AddFunc("*/20 * * * * *", getStreamStatus)
 	c.AddFunc("*/5 * * * * *", checkOpay)
+	c.AddFunc("0 0 */3 * * *", checkYoutubeSubscribe)
 	c.Start()
 }
