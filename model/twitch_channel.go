@@ -20,12 +20,12 @@ type TwitchChannel struct {
 	OpayID     string         `db:"opayid" cc:"opayid"`
 	Ctime      time.Time      `db:"ctime" cc:"ctime"`
 	Mtime      time.Time      `db:"mtime" cc:"ctime"`
-	Groups     []*TwitchGroup `db:"-"`
+	Groups     []*TwitchGroup `db:"-" cc:"-"`
 }
 
 // GetAllTwitchChannel -
 func GetAllTwitchChannel() (channels []*TwitchChannel, err error) {
-	err = x.Select(&channels, `select * from "public"."twitch_channel"`)
+	err = x.Select(&channels, `select * from "public"."twitch_channel" order by "name" desc`)
 	return
 }
 
@@ -92,6 +92,20 @@ func (p *TwitchChannel) UpdateName(name string) (err error) {
 		return
 	}
 	p.Name = name
+	return
+}
+
+// UpdateJoin -
+func (p *TwitchChannel) UpdateJoin(join bool) (err error) {
+	p.Join = join
+	_, err = x.NamedExec(`update "public"."twitch_channel" set "join" = :join where "id" = :id`, p)
+	return
+}
+
+// UpdateOpayID -
+func (p *TwitchChannel) UpdateOpayID(id string) (err error) {
+	p.OpayID = id
+	_, err = x.NamedExec(`update "public"."twitch_channel" set "opayid" = :opayid where "id" = :id`, p)
 	return
 }
 

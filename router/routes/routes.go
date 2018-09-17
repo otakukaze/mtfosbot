@@ -17,7 +17,7 @@ import (
 func NewServ() *gin.Engine {
 	r := gin.New()
 
-	store, err := sessions.NewRedisStore(10, "tcp", "localhost:6379", "")
+	store, err := sessions.NewRedisStore(10, "tcp", "localhost:6379", "", []byte("seckey"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,6 +46,19 @@ func SetRoutes(r *gin.Engine) {
 	{
 		apiGroup.POST("/login", context.PatchCtx(api.UserLogin))
 		apiGroup.POST("/logout", context.PatchCtx(api.UserLogout))
+	}
+	apiTwitchGroup := apiGroup.Group("/twitch", context.PatchCtx(api.CheckSession))
+	{
+		apiTwitchGroup.GET("/channels", context.PatchCtx(api.GetChannels), context.PatchCtx(api.GetChannelList))
+		twitchChannelGroup := apiTwitchGroup.Group("/channel/:chid", context.PatchCtx(api.GetChannels))
+		{
+			twitchChannelGroup.GET("/", context.PatchCtx(api.GetChannelData))
+			twitchChannelGroup.PUT("/botjoin", context.PatchCtx(api.BotJoinChannel))
+			twitchChannelGroup.PUT("/opay", context.PatchCtx(api.OpayIDChange))
+			twitchChannelGroup.GET("/opay/setting", context.PatchCtx(api.GetDonateSetting))
+			twitchChannelGroup.PUT("/opay/setting", context.PatchCtx(api.UpdateDonateSetting))
+		}
+
 	}
 
 	lineApis := r.Group("/line")

@@ -10,7 +10,6 @@ import (
 )
 
 func getStreamStatus() {
-	fmt.Println("run twitch check")
 	channels, err := model.GetAllTwitchChannel()
 	if err != nil {
 		return
@@ -21,7 +20,6 @@ func getStreamStatus() {
 	}
 
 	info := twitch.GetUserStreamStatus(ids)
-	fmt.Printf("info len: %d\n", len(info))
 	if len(info) == 0 {
 		return
 	}

@@ -78,8 +78,6 @@ func getOpayData(ch *model.TwitchChannel) {
 		return
 	}
 
-	fmt.Println(oResp.LstDonate)
-
 	if len(oResp.LstDonate) == 0 {
 		return
 	}
