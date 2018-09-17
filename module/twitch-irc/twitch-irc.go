@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"git.trj.tw/golang/mtfosbot/model"
+
 	"gopkg.in/irc.v2"
 
 	"git.trj.tw/golang/mtfosbot/module/config"
@@ -28,6 +30,7 @@ func InitIRC() {
 	channels = make([]string, 0)
 	queue = NewQueue()
 	runQueue()
+	ReJoin()
 
 	config := irc.ClientConfig{
 		Nick:    "mtfos",
@@ -57,10 +60,24 @@ func SendMessage(ch, msg string) {
 		Command: "PRIVMSG",
 		Params: []string{
 			fmt.Sprintf("#%s", ch),
-			fmt.Sprintf(":%s", msg),
+			fmt.Sprintf("%s", msg),
 		},
 	}
 	queue.Add(m)
+}
+
+// ReJoin -
+func ReJoin() {
+	ch, err := model.GetAllTwitchChannel()
+	if err != nil {
+		return
+	}
+	LeaveAllChannel()
+	for _, v := range ch {
+		if v.Join {
+			JoinChannel(v.Name)
+		}
+	}
 }
 
 // JoinChannel -
@@ -103,6 +120,9 @@ func LeaveChannel(ch string) {
 
 // LeaveAllChannel -
 func LeaveAllChannel() {
+	if len(channels) == 0 {
+		return
+	}
 	for _, v := range channels {
 		m := &MsgObj{
 			Command: "PART",
@@ -118,7 +138,7 @@ func runQueue() {
 	go func() {
 		cnt := 0
 		for {
-			if !queue.IsEmpty() {
+			if !queue.IsEmpty() && client != nil {
 				m := queue.Get()
 				msg := &irc.Message{}
 				msg.Command = m.Command
@@ -142,6 +162,8 @@ func runQueue() {
 			cnt++
 			if cnt > 1800 {
 				// call rejoin
+				ReJoin()
+				cnt = 0
 			}
 			time.Sleep(time.Second * 1)
 		}
