@@ -1,6 +1,6 @@
 port: 10230
 url: ''
-image_root: './images'
+image_root: '/images'
 line:
   secret: ''
   access: ''

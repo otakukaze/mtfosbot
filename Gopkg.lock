@@ -135,6 +135,14 @@
   version = "v0.0.3"
 
 [[projects]]
+  branch = "master"
+  digest = "1:34534b73e925d20cc72cf202f8b482fdcbe3a1b113e19375f31aadabd0f0f97d"
+  name = "github.com/nfnt/resize"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "83c6a9932646f83e3267f353373d47347b6036b2"
+
+[[projects]]
   digest = "1:ed615c5430ecabbb0fb7629a182da65ecee6523900ac1ac932520860878ffcad"
   name = "github.com/robfig/cron"
   packages = ["."]
@@ -215,6 +223,7 @@
     "github.com/gin-gonic/gin/binding",
     "github.com/jmoiron/sqlx",
     "github.com/lib/pq",
+    "github.com/nfnt/resize",
     "github.com/robfig/cron",
     "golang.org/x/crypto/bcrypt",
     "gopkg.in/irc.v2",

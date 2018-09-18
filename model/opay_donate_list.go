@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -15,6 +16,27 @@ type OpayDonateList struct {
 	Name     string    `db:"name" cc:"name"`
 	Ctime    time.Time `db:"ctime" cc:"ctime"`
 	Mtime    time.Time `db:"mtime" cc:"ctime"`
+}
+
+// SumChannelDonatePriceSinceTime -
+func SumChannelDonatePriceSinceTime(twitch string, t time.Time) (i int, err error) {
+	query := `select sum(list.price) as total from "public"."opay_donate_list" list 
+	left join "public"."twitch_channel" tw
+	on tw.opayid = list.opayid
+	where
+	tw.opayid != ''
+	and tw.id = $1
+	and list.ctime >= $2
+	group by list.opayid`
+	row := x.QueryRowx(query, twitch, t)
+	err = row.Scan(&i)
+	if err == sql.ErrNoRows {
+		return 0, nil
+	}
+	if err != nil {
+		return 0, err
+	}
+	return
 }
 
 // GetDonateListWithIDs -

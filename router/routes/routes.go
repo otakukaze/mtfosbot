@@ -1,12 +1,14 @@
 package routes
 
 import (
+	"fmt"
 	"log"
 
 	"git.trj.tw/golang/mtfosbot/module/context"
 	"git.trj.tw/golang/mtfosbot/router/api"
 	"git.trj.tw/golang/mtfosbot/router/google"
 	"git.trj.tw/golang/mtfosbot/router/line"
+	"git.trj.tw/golang/mtfosbot/router/rimg"
 	"git.trj.tw/golang/mtfosbot/router/twitch"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
@@ -36,16 +38,30 @@ func NewServ() *gin.Engine {
 
 // SetRoutes - set routes
 func SetRoutes(r *gin.Engine) {
+	r.NoRoute(func(c *gin.Context) {
+		fmt.Println("match not route")
+		c.String(404, "404 page not found")
+	})
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "ok",
 		})
 	})
 
+	imageProcGroup := r.Group("/image")
+	{
+		imageProcGroup.GET("/origin", func(c *gin.Context) {
+			c.String(200, "test msg")
+		})
+		imageProcGroup.GET("/origin/:imgname", context.PatchCtx(rimg.GetOriginImage))
+	}
+
 	apiGroup := r.Group("/api")
 	{
 		apiGroup.POST("/login", context.PatchCtx(api.UserLogin))
 		apiGroup.POST("/logout", context.PatchCtx(api.UserLogout))
+		apiGroup.GET("/twitch/channel/:chid/opay/bar", context.PatchCtx(api.GetDonateBarStatus))
 	}
 	apiTwitchGroup := apiGroup.Group("/twitch", context.PatchCtx(api.CheckSession))
 	{

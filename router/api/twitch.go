@@ -281,3 +281,39 @@ func UpdateDonateSetting(c *context.Context) {
 
 	c.Success(nil)
 }
+
+// GetDonateBarStatus -
+func GetDonateBarStatus(c *context.Context) {
+	chid := c.Param("chid")
+	chdata, err := model.GetTwitchChannelWithID(chid)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+	if chdata == nil {
+		c.NotFound(nil)
+		return
+	}
+
+	ds, err := model.GetDonateSettingByChannel(chdata.ID)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+
+	sum := 0
+	mapData := map[string]interface{}{}
+	if ds != nil {
+		sum, err = model.SumChannelDonatePriceSinceTime(chdata.ID, ds.StartDate)
+		if err != nil {
+			c.ServerError(nil)
+			return
+		}
+		sum += ds.StartAmount
+		mapData = utils.ToMap(ds)
+		mapData["total"] = sum
+	}
+	c.Success(map[string]interface{}{
+		"setting": mapData,
+	})
+}
