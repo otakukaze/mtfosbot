@@ -51,10 +51,8 @@ func SetRoutes(r *gin.Engine) {
 
 	imageProcGroup := r.Group("/image")
 	{
-		imageProcGroup.GET("/origin", func(c *gin.Context) {
-			c.String(200, "test msg")
-		})
 		imageProcGroup.GET("/origin/:imgname", context.PatchCtx(rimg.GetOriginImage))
+		imageProcGroup.GET("/thumbnail/:imgname", context.PatchCtx(rimg.GetThumbnailImage))
 	}
 
 	apiGroup := r.Group("/api")

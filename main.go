@@ -2,9 +2,14 @@ package main
 
 import (
 	"encoding/gob"
+	"errors"
 	"log"
+	"os"
+	"path"
 	"strconv"
 	"strings"
+
+	"git.trj.tw/golang/mtfosbot/module/utils"
 
 	"git.trj.tw/golang/mtfosbot/model"
 	"git.trj.tw/golang/mtfosbot/module/background"
@@ -37,6 +42,18 @@ func main() {
 	defer db.Close()
 
 	go twitchirc.InitIRC()
+
+	// create thumbnail directory
+	conf := config.GetConf()
+	if !utils.CheckExists(conf.ImageRoot, true) {
+		log.Fatal(errors.New("image root not exists"))
+	}
+	if !utils.CheckExists(path.Join(conf.ImageRoot, "thumbnail"), true) {
+		err = os.MkdirAll(path.Join(conf.ImageRoot, "thumbnail"), 0775)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 
 	server.Run(strings.Join([]string{":", strconv.Itoa(config.GetConf().Port)}, ""))
 }
