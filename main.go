@@ -3,12 +3,14 @@ package main
 import (
 	"encoding/gob"
 	"errors"
+	"flag"
 	"log"
 	"os"
 	"path"
 	"strconv"
 	"strings"
 
+	"git.trj.tw/golang/mtfosbot/module/options"
 	"git.trj.tw/golang/mtfosbot/module/utils"
 
 	"git.trj.tw/golang/mtfosbot/model"
@@ -21,8 +23,20 @@ import (
 
 var server *gin.Engine
 
+func init() {
+	options.RegFlag()
+	flag.Parse()
+}
+
 func main() {
-	err := config.LoadConfig()
+	runOptions := options.GetFlag()
+
+	if runOptions.Help {
+		flag.Usage()
+		return
+	}
+
+	err := config.LoadConfig(runOptions.Config)
 	if err != nil {
 		log.Fatal(err)
 	}

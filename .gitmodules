@@ -1,0 +1,3 @@
+[submodule "schema"]
+	path = schema
+	url = https://git.trj.tw/mtfos/mtfosbot_schema

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"git.trj.tw/golang/mtfosbot/module/config"
 	"git.trj.tw/golang/mtfosbot/module/context"
 	"git.trj.tw/golang/mtfosbot/router/api"
 	"git.trj.tw/golang/mtfosbot/router/google"
@@ -19,7 +20,11 @@ import (
 func NewServ() *gin.Engine {
 	r := gin.New()
 
-	store, err := sessions.NewRedisStore(10, "tcp", "localhost:6379", "", []byte("seckey"))
+	conf := config.GetConf()
+
+	redisStr := fmt.Sprintf("%s:%d", conf.Redis.Host, conf.Redis.Port)
+
+	store, err := sessions.NewRedisStore(10, "tcp", redisStr, "", []byte("seckey"))
 	if err != nil {
 		log.Fatal(err)
 	}
