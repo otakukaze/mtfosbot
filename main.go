@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"git.trj.tw/golang/mtfosbot/module/cmd"
 	"git.trj.tw/golang/mtfosbot/module/options"
 	"git.trj.tw/golang/mtfosbot/module/utils"
 
@@ -41,19 +42,23 @@ func main() {
 		log.Fatal(err)
 	}
 
-	registerTypes()
-	background.SetBackground()
-
-	// create http server
-	server = routes.NewServ()
-	routes.SetRoutes(server)
-
 	// connect to database
 	db, err := model.NewDB()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	if runOptions.DBTool {
+		cmd.DBTool()
+	}
+
+	registerTypes()
+	background.SetBackground()
+
+	// create http server
+	server = routes.NewServ()
+	routes.SetRoutes(server)
 
 	go twitchirc.InitIRC()
 
