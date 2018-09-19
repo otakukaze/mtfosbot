@@ -3,9 +3,12 @@ package line
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"git.trj.tw/golang/mtfosbot/module/apis"
 	"git.trj.tw/golang/mtfosbot/module/config"
@@ -22,6 +25,12 @@ type ImageMessage struct {
 	Type               string `json:"type"`
 	OriginalContentURL string `json:"originalContentUrl"`
 	PreviewImageURL    string `json:"previewImageUrl"`
+}
+
+// LineUserInfo -
+type LineUserInfo struct {
+	DisplayName string `json:"displayName"`
+	UserID      string `json:"userId"`
 }
 
 type pushBody struct {
@@ -61,7 +70,7 @@ func PushMessage(target string, message interface{}) {
 	if len(target) == 0 {
 		return
 	}
-	url := "/v2/bot/message/push"
+	urlPath := "/v2/bot/message/push"
 
 	body := &pushBody{
 		To: target,
@@ -90,7 +99,7 @@ func PushMessage(target string, message interface{}) {
 
 	byteReader := bytes.NewReader(dataByte)
 
-	apiURL, ok := getURL(url)
+	apiURL, ok := getURL(urlPath)
 	if !ok {
 		fmt.Println("url parser fail")
 		return
@@ -120,7 +129,7 @@ func ReplyMessage(replyToken string, message interface{}) {
 	if len(replyToken) == 0 {
 		return
 	}
-	url := "/v2/bot/message/reply"
+	urlPath := "/v2/bot/message/reply"
 
 	body := &replyBody{
 		ReplyToken: replyToken,
@@ -150,7 +159,7 @@ func ReplyMessage(replyToken string, message interface{}) {
 
 	byteReader := bytes.NewReader(dataByte)
 
-	apiURL, ok := getURL(url)
+	apiURL, ok := getURL(urlPath)
 	if !ok {
 		fmt.Println("url parser fail")
 		return
@@ -173,4 +182,50 @@ func ReplyMessage(replyToken string, message interface{}) {
 		fmt.Println("post api fail")
 		return
 	}
+}
+
+// GetUserInfo -
+func GetUserInfo(u, g string) (user *LineUserInfo, err error) {
+	urlPath := fmt.Sprintf("/v2/bot/group/%s/member/%s", g, u)
+	header := getHeaders()
+	apiURL, ok := getURL(urlPath)
+	if !ok {
+		return nil, errors.New("url parser fail")
+	}
+
+	reqObj := apis.RequestObj{
+		Method:  "GET",
+		URL:     apiURL,
+		Headers: header,
+	}
+	req, err := apis.GetRequest(reqObj)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, errors.New("api response not 200")
+	}
+
+	if !strings.HasPrefix(resp.Header.Get("Content-Type"), "application/json") {
+		return nil, errors.New("response body not json")
+	}
+
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(bodyBytes, &user)
+	if err != nil {
+		return nil, err
+	}
+
+	return
 }

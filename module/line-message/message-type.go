@@ -1,6 +1,8 @@
 package linemsg
 
 import (
+	"git.trj.tw/golang/mtfosbot/model"
+	"git.trj.tw/golang/mtfosbot/module/apis/line"
 	lineobj "git.trj.tw/golang/mtfosbot/module/line-message/line-object"
 	msgcmd "git.trj.tw/golang/mtfosbot/module/message-command"
 )
@@ -34,7 +36,30 @@ func textMsg(e *lineobj.EventObject) {
 	if e.Source.Type == "group" {
 		if txt, ok := mtxt.(string); ok {
 			msgcmd.ParseLineMsg(txt, e.ReplyToken, e.Source)
+			saveTextMsgToLog(txt, e.Source)
 		}
 	}
 	return
+}
+
+func saveTextMsgToLog(txt string, s *lineobj.SourceObject) {
+	userData, err := model.GetLineUserByID(s.UserID)
+	if err != nil {
+		return
+	}
+	if userData == nil {
+		tmpu, err := line.GetUserInfo(s.UserID, s.GroupID)
+		if err != nil || tmpu == nil {
+			return
+		}
+		userData = &model.LineUser{}
+		userData.ID = tmpu.UserID
+		userData.Name = tmpu.DisplayName
+		err = userData.Add()
+		if err != nil {
+			return
+		}
+	}
+
+	model.AddLineMessageLog(s.GroupID, s.UserID, txt)
 }
