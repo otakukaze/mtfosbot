@@ -25,6 +25,7 @@ type Config struct {
 		SubSecret    string `yaml:"sub_secret"`
 		ChatHost     string `yaml:"chat_host"`
 		BotOauth     string `yaml:"bot_oauth"`
+		BotUser      string `yaml:"bot_user"`
 	} `yaml:"twitch"`
 	Google struct {
 		APIKey string `yaml:"api_key"`

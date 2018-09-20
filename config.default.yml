@@ -10,6 +10,7 @@ twitch:
   sub_secret: ''
   chat_host: ''
   bot_oauth: ''
+  bot_user: ''
 google:
   api_key: ''
 database:

@@ -33,7 +33,7 @@ func InitIRC() {
 	ReJoin()
 
 	config := irc.ClientConfig{
-		Nick:    "mtfos",
+		Nick:    conf.Twitch.BotUser,
 		Pass:    conf.Twitch.BotOauth,
 		Handler: irc.HandlerFunc(ircHandle),
 	}

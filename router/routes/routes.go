@@ -43,12 +43,8 @@ func NewServ() *gin.Engine {
 
 // SetRoutes - set routes
 func SetRoutes(r *gin.Engine) {
-	r.NoRoute(func(c *gin.Context) {
-		fmt.Println("match not route")
-		c.String(404, "404 page not found")
-	})
-
 	r.GET("/", func(c *gin.Context) {
+		fmt.Println("in next")
 		c.JSON(200, gin.H{
 			"message": "ok",
 		})

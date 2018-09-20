@@ -1,7 +1,9 @@
 FROM golang:1.11-alpine3.8 as builder
 WORKDIR /go/src/git.trj.tw/golang/mtfosbot
+RUN apk add --no-cache make git
+RUN go get -u github.com/otakukaze/go-bindata/...
 COPY . .
-RUN GOOS=linux go build -o mtfosbot .
+RUN make
 
 FROM alpine:latest
 RUN apk add --no-cache ca-certificates
