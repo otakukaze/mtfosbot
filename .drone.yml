@@ -1,0 +1,9 @@
+pipeline:
+  docker:
+    image: plugins/docker
+    registry: docker.mtfos.xyz
+    repo: docker.mtfos.xyz/mtfos/go-bot
+    dockerfile: Dockerfile
+    tags: [latest, "${DRONE_COMMIT}"]
+    when:
+      branch: release
