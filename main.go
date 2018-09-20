@@ -4,7 +4,6 @@ import (
 	"encoding/gob"
 	"errors"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"path"
@@ -42,8 +41,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("load config ::::", config.GetConf())
 
 	// connect to database
 	db, err := model.NewDB()

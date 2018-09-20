@@ -76,6 +76,7 @@ func SetRoutes(r *gin.Engine) {
 
 	}
 
+	r.POST("/line", context.PatchCtx(line.GetRawBody), context.PatchCtx(line.VerifyLine), context.PatchCtx(line.GetLineMessage))
 	lineApis := r.Group("/line")
 	{
 		lineApis.POST("/", context.PatchCtx(line.GetRawBody), context.PatchCtx(line.VerifyLine), context.PatchCtx(line.GetLineMessage))
