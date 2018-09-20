@@ -1,7 +1,7 @@
 FROM golang:1.11-alpine3.8 as builder
 WORKDIR /go/src/git.trj.tw/golang/mtfosbot
-RUN apk add --no-cache make git
-RUN go get -u github.com/otakukaze/go-bindata/...
+RUN apk add --no-cache make git \
+  && go get -u github.com/otakukaze/go-bindata/...
 COPY . .
 RUN make
 
