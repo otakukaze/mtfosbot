@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"errors"
 	"time"
 )
@@ -26,24 +25,17 @@ func GetGroupCommand(c, g string) (cmd *Commands, err error) {
 	if len(c) == 0 {
 		return nil, errors.New("command is empty")
 	}
-	tmpCmd := struct {
-		Commands
-		Message2 sql.NullString `db:"message2"`
-	}{}
-	query := `select  c.*, c2.message as message2 from "public"."commands" c
-		left join "public"."commands" c2
-		on c2.cmd = c.cmd and c2."group" = $2
+	query := `select c.* from "public"."commands" c
 		where c."cmd" = $1
-		and c."group" = ''`
-	err = x.Get(&tmpCmd, query, c, g)
+		and (c."group" = '' or c."group" = $2)
+		order by c."group" desc
+		limit 1`
+	row := x.QueryRowx(query, c, g)
+	// err = x.Get(&cmd, query, c, g)
+	cmd = &Commands{}
+	err = row.StructScan(cmd)
 	if err != nil {
 		return nil, err
 	}
-
-	cmd = &tmpCmd.Commands
-	if tmpCmd.Message2.Valid {
-		cmd.Message = tmpCmd.Message2.String
-	}
-
 	return
 }

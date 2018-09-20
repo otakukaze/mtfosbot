@@ -14,6 +14,7 @@ import (
 // OAuthLogin -
 func OAuthLogin(c *context.Context) {
 	session := sessions.Default(c.Context)
+	twOauth := `https://id.twitch.tv/oauth2/authorize`
 	conf := config.GetConf()
 	redirectTo := strings.TrimRight(conf.URL, "/")
 	redirectTo += "/twitch/oauth"
@@ -29,17 +30,7 @@ func OAuthLogin(c *context.Context) {
 		session.Save()
 	}
 
-	u, err := url.Parse(redirectTo)
-	if err != nil {
-		c.ServerError(nil)
-		return
-	}
-	finalURL, err := u.Parse(qs.Encode())
-	if err != nil {
-		c.ServerError(nil)
-		return
-	}
-	c.Redirect(301, finalURL.String())
+	c.Redirect(302, twOauth+"?"+qs.Encode())
 }
 
 // OAuthProc -
@@ -52,7 +43,7 @@ func OAuthProc(c *context.Context) {
 
 	tokenData, err := twitchapi.GetTokenData(code)
 	if err != nil {
-		c.DataFormat(nil)
+		c.DataFormat("token get fail")
 		return
 	}
 
@@ -76,7 +67,7 @@ func OAuthProc(c *context.Context) {
 	if chData == nil {
 		chData = &model.TwitchChannel{
 			ID:   userData.ID,
-			Name: userData.DisplayName,
+			Name: userData.Login,
 		}
 		err = chData.Add()
 		if err != nil {
@@ -84,8 +75,8 @@ func OAuthProc(c *context.Context) {
 			return
 		}
 	} else {
-		if userData.DisplayName != chData.Name {
-			chData.UpdateName(userData.DisplayName)
+		if userData.Login != chData.Name {
+			chData.UpdateName(userData.Login)
 		}
 	}
 

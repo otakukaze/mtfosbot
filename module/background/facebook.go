@@ -43,7 +43,6 @@ func readFacebookPage() {
 	}
 
 	for _, v := range pages {
-		fmt.Println("get facebook page ::: ", v.ID)
 		go getPageHTML(v)
 	}
 }
@@ -51,8 +50,6 @@ func readFacebookPage() {
 func getPageHTML(page *model.FacebookPage) {
 	err := page.GetGroups()
 	if err != nil {
-		fmt.Println(err)
-		fmt.Println("get group fail")
 		return
 	}
 
@@ -71,12 +68,10 @@ func getPageHTML(page *model.FacebookPage) {
 		timeEl := s.Find("abbr")
 		time, timeExists := timeEl.Attr("data-utime")
 		if !timeExists {
-			fmt.Println("time not found")
 			return
 		}
 		link, linkExists := timeEl.Parent().Attr("href")
 		if !linkExists {
-			fmt.Println("link not found")
 			return
 		}
 		postContent := s.Find("div.userContent")
@@ -93,16 +88,14 @@ func getPageHTML(page *model.FacebookPage) {
 				}
 			}
 			if !idFlag {
-				fmt.Println("id not found")
 				return
 			}
 		}
-		fmt.Printf("Time: %s / Text: %s / ID: %s \n", time, text, postID)
+		// fmt.Printf("Time: %s / Text: %s / ID: %s \n", time, text, postID)
 
 		timeInt, err := strconv.ParseInt(time, 10, 32)
 
 		if err != nil {
-			fmt.Println("convert time to int error")
 			return
 		}
 
@@ -120,7 +113,6 @@ func getPageHTML(page *model.FacebookPage) {
 	})
 
 	if len(pageData) == 0 {
-		fmt.Println("no data found")
 		return
 	}
 

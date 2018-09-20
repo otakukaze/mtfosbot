@@ -4,7 +4,7 @@ package lineobj
 type EventObject struct {
 	Source     *SourceObject          `json:"source" cc:"source"`
 	Type       string                 `json:"type" cc:"type"`
-	Timestamp  int32                  `json:"timestamp" cc:"timestamp"`
+	Timestamp  int64                  `json:"timestamp" cc:"timestamp"`
 	ReplyToken string                 `json:"replyToken" cc:"replyToken"`
 	Message    map[string]interface{} `json:"message" cc:"message"`
 }

@@ -172,6 +172,15 @@ func runQueue() {
 
 func ircHandle(c *irc.Client, m *irc.Message) {
 	fmt.Println("> ", m.String())
+	if m.Command == "PING" {
+		tmp := &irc.Message{
+			Command: "PONG",
+			Params: []string{
+				m.Params[0],
+			},
+		}
+		client.WriteMessage(tmp)
+	}
 }
 
 func indexOf(c []string, data string) int {

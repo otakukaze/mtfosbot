@@ -28,7 +28,8 @@ func GetAllFacebookPage() (pages []*FacebookPage, err error) {
 
 // GetFacebookPage -
 func GetFacebookPage(id string) (page *FacebookPage, err error) {
-	err = x.Get(&page, `select * from "public"."facebook_page" where "id" = $1`, id)
+	page = &FacebookPage{}
+	err = x.Get(page, `select * from "public"."facebook_page" where "id" = $1`, id)
 	return
 }
 

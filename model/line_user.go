@@ -12,7 +12,8 @@ type LineUser struct {
 
 // GetLineUserByID -
 func GetLineUserByID(id string) (u *LineUser, err error) {
-	err = x.Get(&u, `select * from "public"."line_user" where "id" = $1`, id)
+	u = &LineUser{}
+	err = x.Get(u, `select * from "public"."line_user" where "id" = $1`, id)
 	return
 }
 

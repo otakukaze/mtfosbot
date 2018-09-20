@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"git.trj.tw/golang/mtfosbot/module/apis/twitch"
 	"git.trj.tw/golang/mtfosbot/module/cmd"
 	"git.trj.tw/golang/mtfosbot/module/options"
 	"git.trj.tw/golang/mtfosbot/module/utils"
@@ -89,5 +90,7 @@ func registerTypes() {
 	gob.Register(model.OpayDonateList{})
 	gob.Register(model.TwitchChannel{})
 	gob.Register(model.YoutubeChannel{})
+	gob.Register(twitch.TwitchTokenData{})
+	gob.Register(twitch.UserInfo{})
 	gob.Register(map[string]interface{}{})
 }

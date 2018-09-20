@@ -93,7 +93,6 @@ func PushMessage(target string, message interface{}) {
 	body.Messages = append(body.Messages, message)
 	dataByte, err := json.Marshal(body)
 	if err != nil {
-		fmt.Println("json encoding error")
 		return
 	}
 
@@ -101,7 +100,6 @@ func PushMessage(target string, message interface{}) {
 
 	apiURL, ok := getURL(urlPath)
 	if !ok {
-		fmt.Println("url parser fail")
 		return
 	}
 
@@ -119,7 +117,6 @@ func PushMessage(target string, message interface{}) {
 
 	_, err = http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("post api fail")
 		return
 	}
 }
@@ -136,24 +133,24 @@ func ReplyMessage(replyToken string, message interface{}) {
 	}
 
 	switch message.(type) {
-	case ImageMessage:
-		m := (message.(ImageMessage))
+	case *ImageMessage:
+		m := (message.(*ImageMessage))
 		m.Type = "image"
 		message = m
 		break
-	case TextMessage:
-		m := (message.(TextMessage))
+	case *TextMessage:
+		m := (message.(*TextMessage))
 		m.Type = "text"
 		message = m
 		break
 	default:
+		fmt.Println("input type error")
 		return
 	}
 
 	body.Messages = append(body.Messages, message)
 	dataByte, err := json.Marshal(body)
 	if err != nil {
-		fmt.Println("json encoding error")
 		return
 	}
 
@@ -161,7 +158,6 @@ func ReplyMessage(replyToken string, message interface{}) {
 
 	apiURL, ok := getURL(urlPath)
 	if !ok {
-		fmt.Println("url parser fail")
 		return
 	}
 
@@ -179,7 +175,6 @@ func ReplyMessage(replyToken string, message interface{}) {
 
 	_, err = http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("post api fail")
 		return
 	}
 }

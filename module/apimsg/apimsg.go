@@ -63,6 +63,9 @@ func GetRes(name string, msg interface{}) *ResObject {
 	case map[string]interface{}:
 		resobj.Obj = msg
 		break
+	case map[string]string:
+		resobj.Obj = msg
+		break
 	default:
 		resobj.Obj = obj.Obj
 	}

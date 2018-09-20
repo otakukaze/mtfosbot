@@ -15,6 +15,7 @@ type LineMessageLog struct {
 // AddLineMessageLog -
 func AddLineMessageLog(g, u, msg string) (msglog *LineMessageLog, err error) {
 	query := `insert into "public"."line_message_log" ("group", "user", "message") values ($1, $2, $3)`
-	err = x.Get(&msglog, query, g, u, msg)
+	msglog = &LineMessageLog{}
+	err = x.Get(msglog, query, g, u, msg)
 	return
 }

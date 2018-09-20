@@ -40,13 +40,15 @@ func CheckGroupOwner(user, g string) (exists bool, err error) {
 
 // GetLineGroup -
 func GetLineGroup(id string) (g *LineGroup, err error) {
-	err = x.Get(&g, `select * from "public"."line_group" where "id" = $1`, id)
+	g = &LineGroup{}
+	err = x.Get(g, `select * from "public"."line_group" where "id" = $1`, id)
 	return
 }
 
 // AddLineGroup -
 func AddLineGroup(name, owner string, notify bool) (g *LineGroup, err error) {
-	err = x.Get(&g, `insert into "public"."line_group" ("name", "owner", "notify") values ($1, $2, $3)`, name, owner, notify)
+	g = &LineGroup{}
+	err = x.Get(g, `insert into "public"."line_group" ("name", "owner", "notify") values ($1, $2, $3)`, name, owner, notify)
 	if err != nil {
 		return nil, err
 	}

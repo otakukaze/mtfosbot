@@ -1,8 +1,11 @@
 package msgcmd
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
+
+	"git.trj.tw/golang/mtfosbot/module/utils"
 
 	"git.trj.tw/golang/mtfosbot/model"
 
@@ -23,10 +26,12 @@ func parseCMD(in string) (c [][]string) {
 
 // ParseLineMsg -
 func ParseLineMsg(txt, replyToken string, source *lineobj.SourceObject) {
+	fmt.Println("parse Line msg ;::: ", txt, utils.ToMap(source))
 	if source.Type != "group" {
 		return
 	}
 	strs := strings.Split(strings.Trim(txt, " "), " ")
+	fmt.Println(strs)
 	// skip empty string
 	if len(strs[0]) == 0 {
 		return
@@ -35,27 +40,36 @@ func ParseLineMsg(txt, replyToken string, source *lineobj.SourceObject) {
 	if strings.HasPrefix(strs[0], "!") || strings.HasPrefix(strs[0], "！") {
 		// nor cmd
 		cmd := strs[0][1:]
+		fmt.Println(cmd)
 		if len(cmd) == 0 {
 			return
 		}
-		c, err := model.GetGroupCommand(cmd, source.GroupID)
+		c, err := model.GetGroupCommand(strings.ToLower(cmd), source.GroupID)
 		if err != nil || c == nil {
+			fmt.Println("get command fail  ", err)
 			return
 		}
+		fmt.Println("get command ::::", utils.ToMap(c))
 
 		str := runCMD(strings.Join(strs[1:], " "), c.Message, source)
+		fmt.Println("cmd result ::::::", str)
 		m := parseResult(str)
+		fmt.Println("parsed cmd result :::::", m)
 		line.ReplyMessage(replyToken, m)
 
 	} else {
 		// key cmd
-		c, err := model.GetGroupKeyCommand(strs[0], source.GroupID)
+		c, err := model.GetGroupKeyCommand(strings.ToLower(strs[0]), source.GroupID)
 		if err != nil || c == nil {
+			fmt.Println("get command fail::::", err)
 			return
 		}
+		fmt.Println("get command ::::", utils.ToMap(c))
 
 		str := runCMD(strings.Join(strs[1:], " "), c.Message, source)
+		fmt.Println("cmd result ::::", str)
 		m := parseResult(str)
+		fmt.Println("parsed cmd result :::::", m)
 		line.ReplyMessage(replyToken, m)
 
 	}
@@ -81,6 +95,7 @@ func parseResult(str string) interface{} {
 }
 
 func runCMD(txt, c string, s *lineobj.SourceObject) (res string) {
+	fmt.Println("run run run::::::", txt, c, s)
 	cmdAct := parseCMD(c)
 	if len(cmdAct) == 0 {
 		return c
@@ -94,8 +109,9 @@ func runCMD(txt, c string, s *lineobj.SourceObject) (res string) {
 			if len(m) > 1 {
 				sub = strings.Join(m[1:], " ")
 			}
+			fmt.Println("run ::::::::", m[0], sub, txt)
 			cmdRes := selectAct(m[0], sub, txt, s)
-			res = strings.Replace(res, v[1], cmdRes, 1)
+			res = strings.Replace(res, v[0], cmdRes, 1)
 		}
 	}
 	return

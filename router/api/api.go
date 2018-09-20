@@ -24,7 +24,7 @@ func CheckSession(c *context.Context) {
 	case model.Account:
 		name = userData.(model.Account).Account
 	case twitch.UserInfo:
-		name = userData.(twitch.UserInfo).DisplayName
+		name = userData.(twitch.UserInfo).Login
 	default:
 		c.LoginFirst(nil)
 		return
@@ -84,4 +84,19 @@ func UserLogout(c *context.Context) {
 	session.Save()
 
 	c.Success(nil)
+}
+
+// GetSessionData -
+func GetSessionData(c *context.Context) {
+	session := sessions.Default(c.Context)
+	loginUser := session.Get("loginUser")
+	if loginUser == nil {
+		c.LoginFirst(nil)
+		return
+	}
+
+	user := map[string]interface{}{
+		"user": loginUser,
+	}
+	c.Success(user)
 }

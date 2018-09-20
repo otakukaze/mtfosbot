@@ -1,10 +1,10 @@
 package api
 
 import (
-	"fmt"
 	"time"
 
 	"git.trj.tw/golang/mtfosbot/model"
+	"git.trj.tw/golang/mtfosbot/module/apis/twitch"
 	"git.trj.tw/golang/mtfosbot/module/context"
 	"git.trj.tw/golang/mtfosbot/module/twitch-irc"
 	"git.trj.tw/golang/mtfosbot/module/utils"
@@ -49,7 +49,7 @@ func GetChannels(c *context.Context) {
 			c.LoginFirst(nil)
 			return
 		}
-		user, ok := u.(model.TwitchChannel)
+		user, ok := u.(twitch.UserInfo)
 		if !ok {
 			c.LoginFirst(nil)
 			return
@@ -121,9 +121,12 @@ func GetChannelList(c *context.Context) {
 		return
 	}
 
-	mapList := make([]map[string]interface{}, len(list))
-	for k, v := range list {
-		mapList[k] = utils.ToMap(v)
+	mapList := make([]map[string]interface{}, 0)
+	for _, v := range list {
+		if v == nil {
+			continue
+		}
+		mapList = append(mapList, utils.ToMap(v))
 	}
 
 	c.Success(map[string]interface{}{
@@ -221,7 +224,6 @@ func GetDonateSetting(c *context.Context) {
 
 	ds, err := model.GetDonateSettingByChannel(chdata.ID)
 	if err != nil {
-		fmt.Println(ds, err)
 		c.ServerError(nil)
 		return
 	}
@@ -251,7 +253,7 @@ func UpdateDonateSetting(c *context.Context) {
 		End         int64  `json:"end" binding:"exists"`
 		Title       string `json:"title" binding:"required"`
 		Amount      int    `json:"amount" binding:"exists"`
-		StartAmount int    `json:"start_amount"`
+		StartAmount int    `json:"start_amount" binding:"exists"`
 	}{}
 	err := c.BindData(&bodyArg)
 	if err != nil {

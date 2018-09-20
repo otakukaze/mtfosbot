@@ -33,7 +33,8 @@ func GetYoutubeChannelsWithExpire(e int64) (yt []*YoutubeChannel, err error) {
 
 // GetYoutubeChannelWithID -
 func GetYoutubeChannelWithID(id string) (yt *YoutubeChannel, err error) {
-	err = x.Get(&yt, `select * from "public"."youtube_channel" where "id" = $1`, id)
+	yt = &YoutubeChannel{}
+	err = x.Get(yt, `select * from "public"."youtube_channel" where "id" = $1`, id)
 	return
 }
 

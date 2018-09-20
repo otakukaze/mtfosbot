@@ -44,7 +44,6 @@ func NewServ() *gin.Engine {
 // SetRoutes - set routes
 func SetRoutes(r *gin.Engine) {
 	r.GET("/", func(c *gin.Context) {
-		fmt.Println("in next")
 		c.JSON(200, gin.H{
 			"message": "ok",
 		})
@@ -60,6 +59,7 @@ func SetRoutes(r *gin.Engine) {
 	{
 		apiGroup.POST("/login", context.PatchCtx(api.UserLogin))
 		apiGroup.POST("/logout", context.PatchCtx(api.UserLogout))
+		apiGroup.GET("/session", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetSessionData))
 		apiGroup.GET("/twitch/channel/:chid/opay/bar", context.PatchCtx(api.GetDonateBarStatus))
 	}
 	apiTwitchGroup := apiGroup.Group("/twitch", context.PatchCtx(api.CheckSession))

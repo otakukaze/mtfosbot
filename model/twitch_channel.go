@@ -40,7 +40,8 @@ func GetTwitchChannelWithName(name string) (ch *TwitchChannel, err error) {
 	if len(name) == 0 {
 		return nil, errors.New("name empty")
 	}
-	err = x.Get(&ch, `select * from "public"."twitch_channel" where "name" = $1`, name)
+	ch = &TwitchChannel{}
+	err = x.Get(ch, `select * from "public"."twitch_channel" where "name" = $1`, name)
 	return
 }
 
@@ -49,7 +50,8 @@ func GetTwitchChannelWithID(id string) (ch *TwitchChannel, err error) {
 	if len(id) == 0 {
 		return nil, errors.New("id empty")
 	}
-	err = x.Get(&ch, `select * from "public"."twitch_channel" where "id" = $1`, id)
+	ch = &TwitchChannel{}
+	err = x.Get(ch, `select * from "public"."twitch_channel" where "id" = $1`, id)
 	return
 }
 

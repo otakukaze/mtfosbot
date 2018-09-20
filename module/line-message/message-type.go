@@ -17,6 +17,7 @@ func messageType(e *lineobj.EventObject) {
 	if t, ok := mtype.(string); ok {
 		switch t {
 		case "text":
+			textMsg(e)
 			break
 		case "image":
 			break

@@ -1,6 +1,7 @@
 package msgcmd
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -23,6 +24,10 @@ func selectAct(cmd, sub, txt string, s *lineobj.SourceObject) (res string) {
 		return delFacebookPage(sub, txt, s)
 	case "deltwitch":
 		return delTwitchChannel(sub, txt, s)
+	case "image":
+		return fmt.Sprintf("$image$%s", sub)
+	case "hello":
+		return "World!!"
 	}
 	return
 }
@@ -181,7 +186,7 @@ func addTwitchChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 	if ch == nil {
 		ch = &model.TwitchChannel{
 			ID:   info.ID,
-			Name: info.DisplayName,
+			Name: info.Login,
 		}
 		err = ch.Add()
 		if err != nil {

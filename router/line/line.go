@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 
 	"git.trj.tw/golang/mtfosbot/module/config"
@@ -78,7 +77,6 @@ func GetLineMessage(c *context.Context) {
 
 	err := json.Unmarshal(raw, &events)
 	if err != nil {
-		fmt.Println("parse line message error ::: ", err)
 		c.ServerError(nil)
 		return
 	}

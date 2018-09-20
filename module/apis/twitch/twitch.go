@@ -238,11 +238,11 @@ func GetUserStreamStatus(ids []string) (info []*StreamInfo) {
 
 // TwitchTokenData -
 type TwitchTokenData struct {
-	AccessToken  string `json:"access_token" cc:"access_token"`
-	RefreshToken string `json:"refresh_token" cc:"refresh_token"`
-	ExpiresIn    int64  `json:"expires_in" cc:"expires_in"`
-	Scope        string `json:"scope" cc:"scope"`
-	TokenType    string `json:"token_type" cc:"token_type"`
+	AccessToken  string   `json:"access_token" cc:"access_token"`
+	RefreshToken string   `json:"refresh_token" cc:"refresh_token"`
+	ExpiresIn    int64    `json:"expires_in" cc:"expires_in"`
+	Scope        []string `json:"scope" cc:"scope"`
+	TokenType    string   `json:"token_type" cc:"token_type"`
 }
 
 // GetTokenData -
@@ -261,17 +261,17 @@ func GetTokenData(code string) (token *TwitchTokenData, err error) {
 	qs.Add("grant_type", "authorization_code")
 	qs.Add("redirect_uri", redirectTo)
 
-	u, err := url.Parse(twitchURL)
-	if err != nil {
-		return nil, err
-	}
-	u, err = u.Parse(qs.Encode())
-	if err != nil {
-		return nil, err
-	}
+	// u, err := url.Parse(twitchURL)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// u, err = u.Parse(qs.Encode())
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	reqObj := apis.RequestObj{
-		URL:    u.String(),
+		URL:    twitchURL + "?" + qs.Encode(),
 		Method: "POST",
 	}
 	req, err := apis.GetRequest(reqObj)
@@ -285,13 +285,13 @@ func GetTokenData(code string) (token *TwitchTokenData, err error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 || strings.HasPrefix(resp.Header.Get("Content-Type"), "application/json") {
-		return nil, errors.New("api response error")
-	}
-
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != 200 || !strings.HasPrefix(resp.Header.Get("Content-Type"), "application/json") {
+		return nil, errors.New("api response error")
 	}
 
 	err = json.Unmarshal(bodyBytes, &token)
