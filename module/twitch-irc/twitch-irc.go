@@ -179,6 +179,7 @@ func ircHandle(c *irc.Client, m *irc.Message) {
 				m.Params[0],
 			},
 		}
+		fmt.Println("< ", tmp.String())
 		client.WriteMessage(tmp)
 	}
 }

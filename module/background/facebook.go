@@ -1,8 +1,12 @@
 package background
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"regexp"
 	"sort"
 	"strconv"
@@ -62,14 +66,33 @@ func getPageHTML(page *model.FacebookPage) {
 		return
 	}
 	defer resp.Body.Close()
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	fmt.Print("StatusCode:", resp.StatusCode)
+	fmt.Println(" ", resp.Request.URL)
+
+	fmt.Println("page size ::::::: ", len(body))
+
+	rrr := bytes.NewReader(body)
+	f, err := os.Create("/tmp/" + page.ID + ".html")
+	if err == nil {
+		io.Copy(f, rrr)
+		f.Close()
+		rrr.Seek(0, 0)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(rrr)
 	if err != nil {
 		fmt.Println("parse doc err ", err)
 		return
 	}
+	body = nil
 
 	var pageData []*PageData
-	doc.Find("div.userContentWrapper").Each(func(idx int, s *goquery.Selection) {
+	sel := doc.Find("div.userContentWrapper")
+	fmt.Println("select element length >>>>> ", sel.Length())
+	sel.Each(func(idx int, s *goquery.Selection) {
 		timeEl := s.Find("abbr")
 		time, timeExists := timeEl.Attr("data-utime")
 		if !timeExists {
