@@ -119,7 +119,8 @@ func (p *TwitchChannel) GetGroups() (err error) {
 		left join "public"."line_group" g
 		on g.id = rt.line
 		where 
-		tw.id = $1`
+		tw.id = $1
+		and rt.twitch is not null`
 	err = x.Select(&p.Groups, query, p.ID)
 	return
 }

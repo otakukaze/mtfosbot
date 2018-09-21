@@ -62,7 +62,8 @@ func (p *FacebookPage) GetGroups() (err error) {
 		left join "public"."line_group" g
 		on g.id = rt."line"
 		where 
-		p.id = $1`
+		p.id = $1
+		and rt.facebook is not null`
 	err = x.Select(&p.Groups, query, p.ID)
 	return
 }

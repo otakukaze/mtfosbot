@@ -73,7 +73,8 @@ func (p *YoutubeChannel) GetGroups() (err error) {
 		left join "public"."line_group" g
 		on g.id = rt.line
 		where 
-		yt.id = $1`
+		yt.id = $1
+		and rt.youtube is not null`
 	err = x.Select(&p.Groups, query, p.ID)
 	return
 }

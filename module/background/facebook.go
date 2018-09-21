@@ -1,12 +1,8 @@
 package background
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
-	"os"
 	"regexp"
 	"sort"
 	"strconv"
@@ -53,45 +49,26 @@ func readFacebookPage() {
 }
 
 func getPageHTML(page *model.FacebookPage) {
-	fmt.Println("run page ::::: ", page.ID)
 	err := page.GetGroups()
 	if err != nil {
 		fmt.Println("get page group err ", err)
 		return
 	}
 
-	resp, err := http.Get(fmt.Sprintf("https://www.facebook.com/%s", page.ID))
+	resp, err := http.Get(fmt.Sprintf("https://facebook.com/%s", page.ID))
 	if err != nil {
 		fmt.Println("get page html err ", err)
 		return
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
-
-	fmt.Print("StatusCode:", resp.StatusCode)
-	fmt.Println(" ", resp.Request.URL)
-
-	fmt.Println("page size ::::::: ", len(body))
-
-	rrr := bytes.NewReader(body)
-	f, err := os.Create("/tmp/" + page.ID + ".html")
-	if err == nil {
-		io.Copy(f, rrr)
-		f.Close()
-		rrr.Seek(0, 0)
-	}
-
-	doc, err := goquery.NewDocumentFromReader(rrr)
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		fmt.Println("parse doc err ", err)
 		return
 	}
-	body = nil
-
 	var pageData []*PageData
 	sel := doc.Find("div.userContentWrapper")
-	fmt.Println("select element length >>>>> ", sel.Length())
 	sel.Each(func(idx int, s *goquery.Selection) {
 		timeEl := s.Find("abbr")
 		time, timeExists := timeEl.Attr("data-utime")
@@ -122,7 +99,7 @@ func getPageHTML(page *model.FacebookPage) {
 				return
 			}
 		}
-		// fmt.Printf("Time: %s / Text: %s / ID: %s \n", time, text, postID)
+		fmt.Printf("Time: %s / Text: %s / ID: %s \n", time, text, postID)
 
 		timeInt, err := strconv.ParseInt(time, 10, 32)
 
