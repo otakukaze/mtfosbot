@@ -53,6 +53,12 @@ func (c *Context) DataFormat(msg interface{}) {
 	c.AbortWithStatusJSON(obj.Status, obj.Obj)
 }
 
+// Forbidden -
+func (c *Context) Forbidden(msg interface{}) {
+	obj := apimsg.GetRes("Forbidden", msg)
+	c.AbortWithStatusJSON(obj.Status, obj.Obj)
+}
+
 // Success -
 func (c *Context) Success(msg interface{}) {
 	obj := apimsg.GetRes("Success", msg)

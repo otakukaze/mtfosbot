@@ -1,5 +1,6 @@
 port: 10230
 url: ''
+self_key: ''
 image_root: '/images'
 line:
   secret: ''

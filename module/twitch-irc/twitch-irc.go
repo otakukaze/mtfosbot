@@ -86,10 +86,6 @@ func JoinChannel(ch string) {
 		return
 	}
 
-	if indexOf(channels, ch) != -1 {
-		return
-	}
-
 	m := &MsgObj{
 		Command: "JOIN",
 		Params: []string{

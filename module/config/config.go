@@ -14,6 +14,7 @@ import (
 type Config struct {
 	Port      int    `yaml:"port"`
 	URL       string `yaml:"url"`
+	SelfKey   string `yaml:"self_key"`
 	ImageRoot string `yaml:"image_root"`
 	Line      struct {
 		Secret string `yaml:"secret"`

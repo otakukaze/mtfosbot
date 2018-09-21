@@ -9,6 +9,7 @@ import (
 	"git.trj.tw/golang/mtfosbot/router/api"
 	"git.trj.tw/golang/mtfosbot/router/google"
 	"git.trj.tw/golang/mtfosbot/router/line"
+	"git.trj.tw/golang/mtfosbot/router/private"
 	"git.trj.tw/golang/mtfosbot/router/rimg"
 	"git.trj.tw/golang/mtfosbot/router/twitch"
 	"github.com/gin-contrib/cors"
@@ -59,9 +60,17 @@ func SetRoutes(r *gin.Engine) {
 	{
 		apiGroup.POST("/login", context.PatchCtx(api.UserLogin))
 		apiGroup.POST("/logout", context.PatchCtx(api.UserLogout))
+		apiGroup.GET("/line_msg", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetLineMessageLog))
 		apiGroup.GET("/session", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetSessionData))
 		apiGroup.GET("/twitch/channel/:chid/opay/bar", context.PatchCtx(api.GetDonateBarStatus))
 	}
+
+	privateAPIGroup := apiGroup.Group("/private", context.PatchCtx(private.VerifyKey))
+	{
+		privateAPIGroup.GET("/pages", context.PatchCtx(private.GetFacebookPageIDs))
+		privateAPIGroup.POST("/pageposts", context.PatchCtx(private.UpdateFacebookPagePost))
+	}
+
 	apiTwitchGroup := apiGroup.Group("/twitch", context.PatchCtx(api.CheckSession))
 	{
 		apiTwitchGroup.GET("/channels", context.PatchCtx(api.GetChannels), context.PatchCtx(api.GetChannelList))
@@ -73,7 +82,6 @@ func SetRoutes(r *gin.Engine) {
 			twitchChannelGroup.GET("/opay/setting", context.PatchCtx(api.GetDonateSetting))
 			twitchChannelGroup.PUT("/opay/setting", context.PatchCtx(api.UpdateDonateSetting))
 		}
-
 	}
 
 	r.POST("/line", context.PatchCtx(line.GetRawBody), context.PatchCtx(line.VerifyLine), context.PatchCtx(line.GetLineMessage))

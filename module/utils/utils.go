@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"math"
 	"os"
 	"path"
 	"reflect"
@@ -8,6 +9,48 @@ import (
 	"runtime"
 	"strings"
 )
+
+// PageObject -
+type PageObject struct {
+	Page   int `json:"page" cc:"page"`
+	Total  int `json:"total" cc:"total"`
+	Offset int `json:"offset" cc:"offset"`
+	Limit  int `json:"limit" cc:"limit"`
+}
+
+// CalcPage -
+func CalcPage(count, page, max int) (po PageObject) {
+	if count < 0 {
+		count = 0
+	}
+	if page < 1 {
+		page = 1
+	}
+	if max < 1 {
+		max = 1
+	}
+
+	total := int(math.Ceil(float64(count) / float64(max)))
+	if total < 1 {
+		total = 1
+	}
+	if page > total {
+		page = total
+	}
+	offset := (page - 1) * max
+	if offset > count {
+		offset = count
+	}
+	limit := max
+
+	po = PageObject{}
+	po.Limit = limit
+	po.Page = page
+	po.Offset = offset
+	po.Total = total
+
+	return
+}
 
 // ToMap struct to map[string]interface{}
 func ToMap(ss interface{}) map[string]interface{} {
