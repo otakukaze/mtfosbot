@@ -49,6 +49,7 @@ func readFacebookPage() {
 }
 
 func getPageHTML(page *model.FacebookPage) {
+	fmt.Println("run page ::::: ", page.ID)
 	err := page.GetGroups()
 	if err != nil {
 		fmt.Println("get page group err ", err)
