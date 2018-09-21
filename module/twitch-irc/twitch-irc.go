@@ -43,6 +43,12 @@ func InitIRC() {
 	err = client.Run()
 	if err != nil {
 		fmt.Println("twitch chat connect fail")
+		// reconnect after 3sec
+		time.Sleep(time.Second * 3)
+		client = nil
+		channels = channels[:0]
+		queue.Clear()
+		go InitIRC()
 	}
 }
 
@@ -156,7 +162,7 @@ func runQueue() {
 				client.WriteMessage(msg)
 			}
 			cnt++
-			if cnt > 1800 {
+			if cnt > 3600 {
 				// call rejoin
 				ReJoin()
 				cnt = 0
