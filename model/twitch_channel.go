@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 )
@@ -42,6 +43,9 @@ func GetTwitchChannelWithName(name string) (ch *TwitchChannel, err error) {
 	}
 	ch = &TwitchChannel{}
 	err = x.Get(ch, `select * from "public"."twitch_channel" where "name" = $1`, name)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	return
 }
 
@@ -52,6 +56,9 @@ func GetTwitchChannelWithID(id string) (ch *TwitchChannel, err error) {
 	}
 	ch = &TwitchChannel{}
 	err = x.Get(ch, `select * from "public"."twitch_channel" where "id" = $1`, id)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	return
 }
 

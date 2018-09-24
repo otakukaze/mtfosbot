@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 // YoutubeGroup -
 type YoutubeGroup struct {
@@ -35,6 +38,9 @@ func GetYoutubeChannelsWithExpire(e int64) (yt []*YoutubeChannel, err error) {
 func GetYoutubeChannelWithID(id string) (yt *YoutubeChannel, err error) {
 	yt = &YoutubeChannel{}
 	err = x.Get(yt, `select * from "public"."youtube_channel" where "id" = $1`, id)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	return
 }
 

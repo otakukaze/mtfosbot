@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -26,6 +27,9 @@ func GetAllAccount() (accs []*Account, err error) {
 func GetAccount(account string) (acc *Account, err error) {
 	acc = &Account{}
 	err = x.Get(acc, `select * from "public"."account" where "account" = $1`, account)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, err
 	}
