@@ -33,10 +33,10 @@ func GetAllFacebookPage() (pages []*FacebookPage, err error) {
 func GetFacebookPage(id string) (page *FacebookPage, err error) {
 	page = &FacebookPage{}
 	err = x.Get(page, `select * from "public"."facebook_page" where "id" = $1`, id)
-	if err != sql.ErrNoRows {
-		return nil, err
+	if err == sql.ErrNoRows {
+		return nil, nil
 	}
-	return nil, nil
+	return
 }
 
 // AddPage -
