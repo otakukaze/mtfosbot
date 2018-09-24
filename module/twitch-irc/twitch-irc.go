@@ -23,6 +23,9 @@ func InitIRC() {
 	conn, err := tls.Dial("tcp", conf.Twitch.ChatHost, tlsConf)
 	// conn, err := net.Dial("tcp", conf.Twitch.ChatHost)
 	if err != nil {
+		fmt.Println("create irc connect fail ", err)
+		time.Sleep(time.Second * 3)
+		go InitIRC()
 		return
 	}
 	defer conn.Close()
@@ -49,6 +52,7 @@ func InitIRC() {
 		channels = channels[:0]
 		queue.Clear()
 		go InitIRC()
+		return
 	}
 }
 
