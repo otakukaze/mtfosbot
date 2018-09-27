@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"git.trj.tw/golang/mtfosbot/module/apis/twitch"
+	"git.trj.tw/golang/mtfosbot/module/config"
 
 	"git.trj.tw/golang/mtfosbot/model"
 	googleapi "git.trj.tw/golang/mtfosbot/module/apis/google"
@@ -26,6 +27,8 @@ func selectAct(cmd, sub, txt string, s *lineobj.SourceObject) (res string) {
 		return delTwitchChannel(sub, txt, s)
 	case "image":
 		return fmt.Sprintf("$image$%s", sub)
+	case "lottery":
+		return lottery(sub, txt, s)
 	case "hello":
 		return "World!!"
 	}
@@ -297,4 +300,27 @@ func addYoutubeChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 	}
 
 	return "Success"
+}
+
+func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
+	if len(sub) == 0 {
+		return ""
+	}
+	data, err := model.GetRandomLotteryByType(sub)
+	if err != nil || data == nil {
+		return
+	}
+	conf := config.GetConf()
+	u := conf.URL
+	if last := len(u); last > 0 && u[last-1] == '/' {
+		u = u[:last]
+	}
+	oriURL := "/image/origin"
+	thumbURL := "/image/thumbnail"
+	if len(data.Message) == 0 {
+		return
+	}
+	o := u + oriURL + "/" + data.Message + "?d=" + sub
+	t := u + thumbURL + "/" + data.Message + "?d=" + sub
+	return fmt.Sprintf("$image$%s;%s", o, t)
 }

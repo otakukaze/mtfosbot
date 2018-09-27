@@ -45,6 +45,16 @@ func GetOriginImage(c *context.Context) {
 		return
 	}
 
+	subd := c.DefaultQuery("d", "")
+	if len(subd) > 0 {
+		imgP = path.Join(imgP, subd)
+		exists = utils.CheckExists(imgP, true)
+		if !exists {
+			c.NotFound("image path not found")
+			return
+		}
+	}
+
 	newP := path.Join(imgP, fname)
 	exists = utils.CheckExists(newP, false)
 	if !exists {
@@ -126,11 +136,20 @@ func GetThumbnailImage(c *context.Context) {
 		return
 	}
 
-	thumbP := path.Join(imgP, "thumbnail", fname)
+	thumbDir := "thumbnail"
+	subd := c.DefaultQuery("d", "")
+	if exists := utils.CheckExists(path.Join(imgP, thumbDir, subd), true); !exists {
+		if err := os.MkdirAll(path.Join(imgP, thumbDir, subd), 0775); err != nil {
+			c.ServerError(nil)
+			return
+		}
+	}
+
+	thumbP := path.Join(imgP, thumbDir, subd, fname)
 	genNew := false
 	if !utils.CheckExists(thumbP, false) {
 		genNew = true
-		thumbP = path.Join(imgP, fname)
+		thumbP = path.Join(imgP, subd, fname)
 		exists = utils.CheckExists(thumbP, false)
 		if !exists {
 			c.NotFound("image file not found")
@@ -174,7 +193,7 @@ func GetThumbnailImage(c *context.Context) {
 		breader := bytes.NewReader(buf.Bytes())
 
 		if genNew {
-			savep := path.Join(conf.ImageRoot, "thumbnail", fname)
+			savep := path.Join(conf.ImageRoot, "thumbnail", subd, fname)
 			err := saveNewThumbnail(breader, savep)
 			if err != nil {
 				c.ServerError(nil)
