@@ -14,6 +14,7 @@ import (
 )
 
 func selectAct(cmd, sub, txt string, s *lineobj.SourceObject) (res string) {
+	fmt.Println("Try Run CMD :: ", cmd, sub)
 	switch cmd {
 	case "addgroup":
 		return addLineGroup(sub, txt, s)
