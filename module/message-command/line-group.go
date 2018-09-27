@@ -14,7 +14,6 @@ import (
 )
 
 func selectAct(cmd, sub, txt string, s *lineobj.SourceObject) (res string) {
-	fmt.Println("Try Run CMD :: ", cmd, sub)
 	switch cmd {
 	case "addgroup":
 		return addLineGroup(sub, txt, s)
@@ -304,12 +303,10 @@ func addYoutubeChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 }
 
 func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
-	fmt.Println("lottery input ", sub, txt)
 	if len(sub) == 0 {
 		return ""
 	}
 	data, err := model.GetRandomLotteryByType(sub)
-	fmt.Println("get data ::: ", data, err)
 	if err != nil || data == nil {
 		return
 	}
@@ -325,6 +322,5 @@ func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
 	}
 	o := u + oriURL + "/" + data.Message + "?d=" + sub
 	t := u + thumbURL + "/" + data.Message + "?d=" + sub
-	fmt.Printf("$image$%s;%s\n", o, t)
 	return fmt.Sprintf("$image$%s;%s", o, t)
 }
