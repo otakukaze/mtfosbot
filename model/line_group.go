@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 // LineGroup - struct
 type LineGroup struct {
@@ -42,6 +45,9 @@ func CheckGroupOwner(user, g string) (exists bool, err error) {
 func GetLineGroup(id string) (g *LineGroup, err error) {
 	g = &LineGroup{}
 	err = x.Get(g, `select * from "public"."line_group" where "id" = $1`, id)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	return
 }
 
@@ -49,8 +55,8 @@ func GetLineGroup(id string) (g *LineGroup, err error) {
 func AddLineGroup(name, owner string, notify bool) (g *LineGroup, err error) {
 	g = &LineGroup{}
 	err = x.Get(g, `insert into "public"."line_group" ("name", "owner", "notify") values ($1, $2, $3)`, name, owner, notify)
-	if err != nil {
-		return nil, err
+	if err == sql.ErrNoRows {
+		return nil, nil
 	}
 	return
 }

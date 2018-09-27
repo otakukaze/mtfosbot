@@ -147,5 +147,9 @@ func GetLineMessageLog(c *context.Context) {
 
 	c.Success(map[string]interface{}{
 		"list": resMap,
+		"page": map[string]interface{}{
+			"cur":   page.Page,
+			"total": page.Total,
+		},
 	})
 }

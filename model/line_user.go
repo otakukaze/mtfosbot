@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 // LineUser -
 type LineUser struct {
@@ -14,6 +17,9 @@ type LineUser struct {
 func GetLineUserByID(id string) (u *LineUser, err error) {
 	u = &LineUser{}
 	err = x.Get(u, `select * from "public"."line_user" where "id" = $1`, id)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	return
 }
 
