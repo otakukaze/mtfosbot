@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"math/rand"
 	"time"
 )
 
@@ -17,7 +18,8 @@ type Lottery struct {
 // GetRandomLotteryByType -
 func GetRandomLotteryByType(t string) (p *Lottery, err error) {
 	p = &Lottery{}
-	err = x.Get(p, `select * from "public"."lottery" where "type" = $1 order by random() limit 1`, t)
+	offset := rand.Intn(10)
+	err = x.Get(p, `select * from "public"."lottery" where "type" = $1 order by random() offset $2 limit 1`, t, offset)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
