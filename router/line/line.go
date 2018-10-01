@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 
 	"git.trj.tw/golang/mtfosbot/module/config"
@@ -70,6 +71,8 @@ func GetLineMessage(c *context.Context) {
 	if raw, ok = rawbody.([]byte); !ok {
 		c.DataFormat("body type error")
 	}
+
+	fmt.Println("Line Hook ::: ", string(raw))
 
 	events := struct {
 		Events []*lineobj.EventObject `json:"events"`
