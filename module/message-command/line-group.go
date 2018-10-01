@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"git.trj.tw/golang/mtfosbot/module/apis/twitch"
+	"git.trj.tw/golang/mtfosbot/module/config"
 
 	"git.trj.tw/golang/mtfosbot/model"
 	googleapi "git.trj.tw/golang/mtfosbot/module/apis/google"
@@ -30,6 +31,8 @@ func selectAct(cmd, sub, txt string, s *lineobj.SourceObject) (res string) {
 		return addYoutubeChannel(sub, txt, s)
 	case "delyoutube":
 		return delYoutubeChannel(sub, txt, s)
+	case "lottery":
+		return lottery(sub, txt, s)
 	case "hello":
 		return "World!!"
 	}
@@ -321,7 +324,7 @@ func delYoutubeChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 		return "channel not exists"
 	}
 	rt := &model.LineYoutubeRT{
-		Line: s.GroupID,
+		Line:    s.GroupID,
 		Youtube: ytData.ID,
 	}
 	err = rt.DelRT()
@@ -329,4 +332,27 @@ func delYoutubeChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 		return "delete channel fail"
 	}
 	return "Success"
+}
+
+func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
+	if len(sub) == 0 {
+		return ""
+	}
+	data, err := model.GetRandomLotteryByType(sub)
+	if err != nil || data == nil {
+		return
+	}
+	conf := config.GetConf()
+	u := conf.URL
+	if last := len(u); last > 0 && u[last-1] == '/' {
+		u = u[:last]
+	}
+	oriURL := "/image/origin"
+	thumbURL := "/image/thumbnail"
+	if len(data.Message) == 0 {
+		return
+	}
+	o := u + oriURL + "/" + data.Message + "?d=" + sub
+	t := u + thumbURL + "/" + data.Message + "?d=" + sub
+	return fmt.Sprintf("$image$%s;%s", o, t)
 }
