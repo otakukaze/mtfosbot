@@ -2,6 +2,7 @@ port: 10230
 url: ''
 self_key: ''
 image_root: '/images'
+log_image_root: '/log_images'
 line:
   secret: ''
   access: ''

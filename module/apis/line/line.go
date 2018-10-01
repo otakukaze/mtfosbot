@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -221,6 +222,68 @@ func GetUserInfo(u, g string) (user *LineUserInfo, err error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return
+}
+
+// GetContentHead -
+func GetContentHead(id string) (mime string, err error) {
+	urlPath := fmt.Sprintf("/v2/bot/message/%s/content", id)
+	header := getHeaders()
+	u, ok := getURL(urlPath)
+	if !ok {
+		return "", errors.New("get url fail")
+	}
+
+	reqObj := apis.RequestObj{
+		Method:  "HEAD",
+		URL:     u,
+		Headers: header,
+	}
+
+	req, err := apis.GetRequest(reqObj)
+	if err != nil {
+		return "", err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	mime = resp.Header.Get("Content-Type")
+
+	return
+}
+
+// DownloadContent -
+func DownloadContent(id string, w io.Writer) (err error) {
+	urlPath := fmt.Sprintf("/v2/bot/message/%s/content", id)
+	header := getHeaders()
+	u, ok := getURL(urlPath)
+	if !ok {
+		return errors.New("get url fail")
+	}
+
+	reqObj := apis.RequestObj{
+		Method:  "GET",
+		URL:     u,
+		Headers: header,
+	}
+
+	req, err := apis.GetRequest(reqObj)
+	if err != nil {
+		return err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	_, err = io.Copy(w, resp.Body)
 
 	return
 }

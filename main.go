@@ -74,6 +74,9 @@ func main() {
 			log.Fatal(err)
 		}
 	}
+	if !utils.CheckExists(conf.LogImageRoot, true) {
+		log.Fatal(errors.New("log image root not exists"))
+	}
 
 	server.Run(strings.Join([]string{":", strconv.Itoa(config.GetConf().Port)}, ""))
 }

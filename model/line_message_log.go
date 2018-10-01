@@ -11,6 +11,7 @@ type LineMessageLog struct {
 	Group   string    `db:"group" cc:"group"`
 	User    string    `db:"user" cc:"user"`
 	Message string    `db:"message" cc:"message"`
+	Type    string    `db:"type" cc:"type"`
 	Ctime   time.Time `db:"ctime" cc:"ctime"`
 	Mtime   time.Time `db:"mtime" cc:"mtime"`
 }
@@ -23,10 +24,10 @@ type LineMessageLogWithUG struct {
 }
 
 // AddLineMessageLog -
-func AddLineMessageLog(g, u, msg string) (msglog *LineMessageLog, err error) {
-	query := `insert into "public"."line_message_log" ("group", "user", "message") values ($1, $2, $3)`
+func AddLineMessageLog(g, u, msg, t string) (msglog *LineMessageLog, err error) {
+	query := `insert into "public"."line_message_log" ("group", "user", "message", "type") values ($1, $2, $3, $4)`
 	msglog = &LineMessageLog{}
-	err = x.Get(msglog, query, g, u, msg)
+	err = x.Get(msglog, query, g, u, msg, t)
 	return
 }
 
