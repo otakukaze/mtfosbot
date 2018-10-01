@@ -26,6 +26,10 @@ func selectAct(cmd, sub, txt string, s *lineobj.SourceObject) (res string) {
 		return delTwitchChannel(sub, txt, s)
 	case "image":
 		return fmt.Sprintf("$image$%s", sub)
+	case "addyoutube":
+		return addYoutubeChannel(sub, txt, s)
+	case "delyoutube":
+		return delYoutubeChannel(sub, txt, s)
 	case "hello":
 		return "World!!"
 	}
@@ -296,5 +300,33 @@ func addYoutubeChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 		return "add youtube channel rt fail"
 	}
 
+	return "Success"
+}
+
+func delYoutubeChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
+	// args = youtubeID
+	ok, err := checkGroupOwner(s)
+	if err != nil {
+		return "check group fail"
+	}
+	if !ok {
+		return "not owner"
+	}
+	txt = strings.Trim(txt, " ")
+	ytData, err := model.GetYoutubeChannelWithID(txt)
+	if err != nil {
+		return "check channel fail"
+	}
+	if ytData == nil {
+		return "channel not exists"
+	}
+	rt := &model.LineYoutubeRT{
+		Line: s.GroupID,
+		Youtube: ytData.ID,
+	}
+	err = rt.DelRT()
+	if err != nil {
+		return "delete channel fail"
+	}
 	return "Success"
 }
