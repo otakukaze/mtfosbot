@@ -8,6 +8,8 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 	"io"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"path"
 	"strconv"
@@ -273,4 +275,39 @@ func saveNewThumbnail(fio io.Reader, newp string) (err error) {
 	}
 
 	return
+}
+
+// GetLineLogImage -
+func GetLineLogImage(c *context.Context) {
+	conf := config.GetConf()
+	fname := c.Param("imgname")
+
+	if !utils.CheckExists(path.Join(conf.LogImageRoot, fname), false) {
+		c.NotFound("image not found")
+		return
+	}
+
+	f, err := os.Open(path.Join(conf.LogImageRoot, fname))
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+	defer f.Close()
+
+	r := io.LimitReader(f, 512)
+	bytes, err := ioutil.ReadAll(r)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+	_, err = f.Seek(0, 0)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+
+	contentType := http.DetectContentType(bytes)
+
+	c.Writer.Header().Set("Content-Type", contentType)
+	io.Copy(c.Writer, f)
 }
