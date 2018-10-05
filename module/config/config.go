@@ -43,6 +43,10 @@ type Config struct {
 		Host string `yaml:"host"`
 		Port int    `yaml:"port"`
 	} `yaml:"redis"`
+	Elasticsearch struct{
+		Host string `yaml:"host"`
+		Index string `yaml:"index"`
+	} `yaml:"elasticsearch"`
 }
 
 var conf *Config

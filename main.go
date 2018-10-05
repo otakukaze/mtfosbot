@@ -4,6 +4,8 @@ import (
 	"encoding/gob"
 	"errors"
 	"flag"
+	"fmt"
+	"git.trj.tw/golang/mtfosbot/module/es"
 	"log"
 	"os"
 	"path"
@@ -42,6 +44,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	err = es.NewClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = es.PutLog()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("run done")
+	return
 
 	// connect to database
 	db, err := model.NewDB()

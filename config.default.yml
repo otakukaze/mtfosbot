@@ -24,3 +24,6 @@ database:
 redis:
   host: 'localhost'
   port: 6379
+elasticsearch:
+  host: 'http://localhost:9200'
+  index: 'mtfosbot'
