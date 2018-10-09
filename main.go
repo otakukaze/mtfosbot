@@ -111,18 +111,18 @@ func PrintMemUsage() {
 	fmt.Printf("\t NextGC = %v MiB\n", bToMb(m.NextGC))
 
 	obj := map[string]interface{}{
-		"Alloc":        fmt.Sprintf("%v MiB", bToMb(m.Alloc)),
-		"Sys":          fmt.Sprintf("%v MiB", bToMb(m.Sys)),
-		"HeapAlloc":    fmt.Sprintf("%v MiB", bToMb(m.HeapAlloc)),
-		"HeapSys":      fmt.Sprintf("%v MiB", bToMb(m.HeapSys)),
-		"HeapIdle":     fmt.Sprintf("%v MiB", bToMb(m.HeapIdle)),
-		"HeapInuse":    fmt.Sprintf("%v MiB", bToMb(m.HeapInuse)),
-		"HeapReleased": fmt.Sprintf("%v MiB", bToMb(m.HeapReleased)),
-		"StackInuse":   fmt.Sprintf("%v MiB", bToMb(m.StackInuse)),
-		"StackSys":     fmt.Sprintf("%v MiB", bToMb(m.StackSys)),
-		"GCSys":        fmt.Sprintf("%v MiB", bToMb(m.GCSys)),
-		"NextGC":       fmt.Sprintf("%v MiB", bToMb(m.NextGC)),
-		"NumGC":        fmt.Sprintf("%v", m.NumGC),
+		"Alloc":        m.Alloc,
+		"Sys":          m.Sys,
+		"HeapAlloc":    m.HeapAlloc,
+		"HeapSys":      m.HeapSys,
+		"HeapIdle":     m.HeapIdle,
+		"HeapInuse":    m.HeapInuse,
+		"HeapReleased": m.HeapReleased,
+		"StackInuse":   m.StackInuse,
+		"StackSys":     m.StackSys,
+		"GCSys":        m.GCSys,
+		"NextGC":       m.NextGC,
+		"NumGC":        m.NumGC,
 	}
 
 	es.PutLog("memory", obj)
