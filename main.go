@@ -84,7 +84,7 @@ func main() {
 	go func() {
 		for {
 			PrintMemUsage()
-			time.Sleep(time.Second * 10)
+			time.Sleep(time.Second * 20)
 		}
 	}()
 
@@ -100,6 +100,9 @@ func PrintMemUsage() {
 	fmt.Printf("\tTotalAlloc = %v MiB", bToMb(m.TotalAlloc))
 	fmt.Printf("\tSys = %v MiB", bToMb(m.Sys))
 	fmt.Printf("\tNumGC = %v\n", m.NumGC)
+	fmt.Printf("HeapAlloc = %v MiB", bToMb(m.HeapAlloc))
+	fmt.Printf("\t HeapSys = %v MiB", bToMb(m.HeapSys))
+	fmt.Printf("\t NextGC = %v MiB\n", bToMb(m.NextGC))
 }
 func bToMb(b uint64) uint64 {
 	return b / 1024 / 1024

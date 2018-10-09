@@ -33,7 +33,8 @@ func ParseLineMsg(txt, replyToken string, source *lineobj.SourceObject) {
 		return
 	}
 
-	if strings.HasPrefix(strs[0], "!") || strings.HasPrefix(strs[0], "！") {
+	firstNum := []rune(strs[0])[0]
+	if firstNum == 33 || firstNum == 65281 {
 		// nor cmd
 		cmd := strs[0][1:]
 		if len(cmd) == 0 {
