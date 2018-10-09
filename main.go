@@ -47,6 +47,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	err = es.NewClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// connect to database
 	db, err := model.NewDB()
 	if err != nil {
