@@ -350,6 +350,15 @@ func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
 	for idx, val := range perm {
 		dest[val] = arr[idx]
 	}
+	defer func() {
+		for i := range perm {
+			dest[i] = nil
+			arr[i] = nil
+		}
+		dest = nil
+		arr = nil
+		perm = nil
+	}()
 
 	data := dest[0]
 
