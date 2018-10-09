@@ -15,6 +15,7 @@ import (
 
 	"git.trj.tw/golang/mtfosbot/module/apis/twitch"
 	"git.trj.tw/golang/mtfosbot/module/cmd"
+	"git.trj.tw/golang/mtfosbot/module/es"
 	"git.trj.tw/golang/mtfosbot/module/options"
 	"git.trj.tw/golang/mtfosbot/module/utils"
 
@@ -103,6 +104,23 @@ func PrintMemUsage() {
 	fmt.Printf("HeapAlloc = %v MiB", bToMb(m.HeapAlloc))
 	fmt.Printf("\t HeapSys = %v MiB", bToMb(m.HeapSys))
 	fmt.Printf("\t NextGC = %v MiB\n", bToMb(m.NextGC))
+
+	obj := map[string]interface{}{
+		"Alloc":        fmt.Sprintf("%v MiB", bToMb(m.Alloc)),
+		"Sys":          fmt.Sprintf("%v MiB", bToMb(m.Sys)),
+		"HeapAlloc":    fmt.Sprintf("%v MiB", bToMb(m.HeapAlloc)),
+		"HeapSys":      fmt.Sprintf("%v MiB", bToMb(m.HeapSys)),
+		"HeapIdle":     fmt.Sprintf("%v MiB", bToMb(m.HeapIdle)),
+		"HeapInuse":    fmt.Sprintf("%v MiB", bToMb(m.HeapInuse)),
+		"HeapReleased": fmt.Sprintf("%v MiB", bToMb(m.HeapReleased)),
+		"StackInuse":   fmt.Sprintf("%v MiB", bToMb(m.StackInuse)),
+		"StackSys":     fmt.Sprintf("%v MiB", bToMb(m.StackSys)),
+		"GCSys":        fmt.Sprintf("%v MiB", bToMb(m.GCSys)),
+		"NextGC":       fmt.Sprintf("%v MiB", bToMb(m.NextGC)),
+		"NumGC":        fmt.Sprintf("%v", m.NumGC),
+	}
+
+	es.PutLog("memory", obj)
 }
 func bToMb(b uint64) uint64 {
 	return b / 1024 / 1024
