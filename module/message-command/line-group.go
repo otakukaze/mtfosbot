@@ -349,9 +349,7 @@ func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
 	perm := rand.Perm(len(arr))
 	for idx, val := range perm {
 		dest[val] = arr[idx]
-		arr[idx] = nil
 	}
-	arr = nil
 
 	data := dest[0]
 
