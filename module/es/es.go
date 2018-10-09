@@ -36,7 +36,7 @@ func PutLog(t string, body map[string]interface{}) (err error) {
 	body["timestamp"] = time.Now().UnixNano() / 1000000
 	body["date"] = time.Now().UTC()
 	nt := time.Now()
-	idx := fmt.Sprintf("%v-%v-%v-%v", conf.Elasticsearch.Index, nt.Year(), nt.Month(), nt.Day())
+	idx := fmt.Sprintf("%v-%v-%v-%v", conf.Elasticsearch.Index, nt.Year(), int(nt.Month()), nt.Day())
 	_, err = client.Index().Index(idx).Type(t).BodyJson(body).Do(ctx)
 	return
 }
