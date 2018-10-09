@@ -30,7 +30,7 @@ func GetRandomLotteryByType(t string) (p *Lottery, err error) {
 // GetRandomLotteryByTypeAndLimit -
 func GetRandomLotteryByTypeAndLimit(t string, limit int) (p []*Lottery, err error) {
 	offset := rand.Intn(10)
-	err = x.Select(p, `select * from "public"."lottery" where "type" = $1 order by random() offset $2 limit $3`, t, offset, limit)
+	err = x.Select(&p, `select * from "public"."lottery" where "type" = $1 order by random() offset $2 limit $3`, t, offset, limit)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}

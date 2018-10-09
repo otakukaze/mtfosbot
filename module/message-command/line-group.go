@@ -343,7 +343,6 @@ func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
 	if err != nil || arr == nil {
 		return ""
 	}
-	fmt.Println("get number lottery ::::: ", len(arr))
 
 	// shuffle array
 	dest := make([]*model.Lottery, len(arr))
@@ -353,7 +352,6 @@ func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
 	}
 
 	data := dest[0]
-	fmt.Println("Get Data :::: ", data)
 
 	conf := config.GetConf()
 	u := conf.URL
