@@ -1,6 +1,7 @@
 package msgcmd
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -34,6 +35,7 @@ func ParseLineMsg(txt, replyToken string, source *lineobj.SourceObject) {
 	}
 
 	firstNum := []rune(strs[0])[0]
+	fmt.Println("Char :: ", strs[0][0], " Number :: ", firstNum)
 	if firstNum == 33 || firstNum == 65281 {
 		// nor cmd
 		cmd := strs[0][1:]
