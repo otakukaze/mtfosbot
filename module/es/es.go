@@ -3,6 +3,7 @@ package es
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"git.trj.tw/golang/mtfosbot/module/config"
 	"github.com/olivere/elastic"
@@ -24,11 +25,15 @@ func NewClient() (err error) {
 
 // PutLog -
 func PutLog(t string, body map[string]interface{}) (err error) {
+	if client == nil {
+		return
+	}
 	if len(t) == 0 || body == nil {
 		return
 	}
 	conf := config.GetConf()
 	ctx := context.Background()
+	body["timestamp"] = time.Now().UnixNano()
 	_, err = client.Index().Index(conf.Elasticsearch.Index).Type(t).BodyJson(body).Do(ctx)
 	return
 }
