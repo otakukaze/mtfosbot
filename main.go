@@ -4,11 +4,14 @@ import (
 	"encoding/gob"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"path"
+	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"git.trj.tw/golang/mtfosbot/module/apis/twitch"
 	"git.trj.tw/golang/mtfosbot/module/cmd"
@@ -78,7 +81,28 @@ func main() {
 		log.Fatal(errors.New("log image root not exists"))
 	}
 
+	go func() {
+		for {
+			PrintMemUsage()
+			time.Sleep(time.Second * 10)
+		}
+	}()
+
 	server.Run(strings.Join([]string{":", strconv.Itoa(config.GetConf().Port)}, ""))
+}
+
+// PrintMemUsage -
+func PrintMemUsage() {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	// For info on each, see: https://golang.org/pkg/runtime/#MemStats
+	fmt.Printf("Alloc = %v MiB", bToMb(m.Alloc))
+	fmt.Printf("\tTotalAlloc = %v MiB", bToMb(m.TotalAlloc))
+	fmt.Printf("\tSys = %v MiB", bToMb(m.Sys))
+	fmt.Printf("\tNumGC = %v\n", m.NumGC)
+}
+func bToMb(b uint64) uint64 {
+	return b / 1024 / 1024
 }
 
 func registerTypes() {
