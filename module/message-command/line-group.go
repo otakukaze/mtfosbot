@@ -2,6 +2,7 @@ package msgcmd
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
 
@@ -338,10 +339,29 @@ func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
 	if len(sub) == 0 {
 		return ""
 	}
-	data, err := model.GetRandomLotteryByType(sub)
-	if err != nil || data == nil {
-		return
+	arr, err := model.GetRandomLotteryByTypeAndLimit(sub, 100)
+	if err != nil || arr == nil {
+		return ""
 	}
+
+	// shuffle array
+	dest := make([]*model.Lottery, len(arr))
+	perm := rand.Perm(len(arr))
+	for idx, val := range perm {
+		dest[val] = arr[idx]
+		arr[idx] = nil
+	}
+
+	data := dest[0]
+
+	// set arr to nil
+	for i := range dest {
+		dest[i] = nil
+	}
+	arr = nil
+	dest = nil
+	perm = nil
+
 	conf := config.GetConf()
 	u := conf.URL
 	if last := len(u); last > 0 && u[last-1] == '/' {
@@ -350,7 +370,7 @@ func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
 	oriURL := "/image/origin"
 	thumbURL := "/image/thumbnail"
 	if len(data.Message) == 0 {
-		return
+		return ""
 	}
 	o := u + oriURL + "/" + data.Message + "?d=" + sub
 	t := u + thumbURL + "/" + data.Message + "?d=" + sub

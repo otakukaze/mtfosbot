@@ -17,9 +17,20 @@ type Lottery struct {
 
 // GetRandomLotteryByType -
 func GetRandomLotteryByType(t string) (p *Lottery, err error) {
-	p = &Lottery{}
+	parr, err := GetRandomLotteryByTypeAndLimit(t, 1)
+	if err != nil {
+		return nil, err
+	}
+	if parr == nil {
+		return nil, nil
+	}
+	return parr[0], err
+}
+
+// GetRandomLotteryByTypeAndLimit -
+func GetRandomLotteryByTypeAndLimit(t string, limit int) (p []*Lottery, err error) {
 	offset := rand.Intn(10)
-	err = x.Get(p, `select * from "public"."lottery" where "type" = $1 order by random() offset $2 limit 1`, t, offset)
+	err = x.Select(p, `select * from "public"."lottery" where "type" = $1 order by random() offset $2 limit $3`, t, offset, limit)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
