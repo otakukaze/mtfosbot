@@ -351,16 +351,9 @@ func lottery(sub, txt string, s *lineobj.SourceObject) (res string) {
 		dest[val] = arr[idx]
 		arr[idx] = nil
 	}
+	arr = nil
 
 	data := dest[0]
-
-	// set arr to nil
-	for i := range dest {
-		dest[i] = nil
-	}
-	arr = nil
-	dest = nil
-	perm = nil
 
 	conf := config.GetConf()
 	u := conf.URL
