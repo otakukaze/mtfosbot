@@ -94,6 +94,11 @@ func GetOriginImage(c *context.Context) {
 			c.ServerError(nil)
 			return
 		}
+		defer func() {
+			buf.Reset()
+			buf = nil
+		}()
+
 		c.Writer.Header().Set("Content-Type", "image/jpeg")
 		c.Writer.Header().Set("Content-Length", strconv.Itoa(buf.Len()))
 		_, err = c.Writer.Write(buf.Bytes())
@@ -116,6 +121,9 @@ func GetOriginImage(c *context.Context) {
 			c.ServerError(nil)
 			return
 		}
+		defer func() {
+			buf = nil
+		}()
 
 		c.Writer.Header().Set("Content-Type", "image/jpeg")
 		io.Copy(c.Writer, buf)
@@ -192,7 +200,12 @@ func GetThumbnailImage(c *context.Context) {
 			c.ServerError(nil)
 			return
 		}
+
 		breader := bytes.NewReader(buf.Bytes())
+		defer func() {
+			buf = nil
+			breader = nil
+		}()
 
 		if genNew {
 			savep := path.Join(conf.ImageRoot, "thumbnail", subd, fname)
@@ -227,6 +240,10 @@ func GetThumbnailImage(c *context.Context) {
 		}
 
 		breader := bytes.NewReader(buf.Bytes())
+		defer func() {
+			buf = nil
+			breader = nil
+		}()
 
 		savep := path.Join(conf.ImageRoot, "thumbnail", fname)
 		err = saveNewThumbnail(breader, savep)
