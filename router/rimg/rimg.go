@@ -97,6 +97,7 @@ func GetOriginImage(c *context.Context) {
 		defer func() {
 			buf.Reset()
 			buf = nil
+			img = nil
 		}()
 
 		c.Writer.Header().Set("Content-Type", "image/jpeg")
@@ -123,6 +124,7 @@ func GetOriginImage(c *context.Context) {
 		}
 		defer func() {
 			buf = nil
+			img = nil
 		}()
 
 		c.Writer.Header().Set("Content-Type", "image/jpeg")
@@ -205,6 +207,7 @@ func GetThumbnailImage(c *context.Context) {
 		defer func() {
 			buf = nil
 			breader = nil
+			img = nil
 		}()
 
 		if genNew {
@@ -243,6 +246,7 @@ func GetThumbnailImage(c *context.Context) {
 		defer func() {
 			buf = nil
 			breader = nil
+			img = nil
 		}()
 
 		savep := path.Join(conf.ImageRoot, "thumbnail", fname)
