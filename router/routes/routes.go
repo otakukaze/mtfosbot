@@ -13,6 +13,7 @@ import (
 	"git.trj.tw/golang/mtfosbot/router/rimg"
 	"git.trj.tw/golang/mtfosbot/router/twitch"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -102,4 +103,7 @@ func SetRoutes(r *gin.Engine) {
 		twitchApis.GET("/login", context.PatchCtx(twitch.OAuthLogin))
 		twitchApis.GET("/oauth", context.PatchCtx(twitch.OAuthProc))
 	}
+
+	// set pprof router
+	pprof.Register(r)
 }

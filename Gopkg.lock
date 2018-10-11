@@ -45,6 +45,14 @@
   version = "v1.2"
 
 [[projects]]
+  digest = "1:fd66f3d5f4398879b0051e46e8421abdc93b5a6a64b645dc80986157fb99308d"
+  name = "github.com/gin-contrib/pprof"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "cea200e02ddddca4b843d75d32aa13c413549de9"
+  version = "v1.1"
+
+[[projects]]
   branch = "master"
   digest = "1:36fe9527deed01d2a317617e59304eb2c4ce9f8a24115bcc5c2e37b3aee5bae4"
   name = "github.com/gin-contrib/sse"
@@ -251,6 +259,7 @@
   input-imports = [
     "github.com/PuerkitoBio/goquery",
     "github.com/gin-contrib/cors",
+    "github.com/gin-contrib/pprof",
     "github.com/gin-gonic/contrib/sessions",
     "github.com/gin-gonic/gin",
     "github.com/gin-gonic/gin/binding",
