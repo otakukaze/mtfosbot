@@ -105,8 +105,5 @@ func SetRoutes(r *gin.Engine) {
 	}
 
 	// set pprof router
-	popts := &pprof.Options{
-		RoutePrefix: "/dev/pprof",
-	}
-	pprof.Register(r, popts)
+	pprof.Register(r, nil)
 }
