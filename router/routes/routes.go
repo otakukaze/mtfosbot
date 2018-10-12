@@ -12,8 +12,8 @@ import (
 	"git.trj.tw/golang/mtfosbot/router/private"
 	"git.trj.tw/golang/mtfosbot/router/rimg"
 	"git.trj.tw/golang/mtfosbot/router/twitch"
+	"github.com/DeanThompson/ginpprof"
 	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -105,5 +105,5 @@ func SetRoutes(r *gin.Engine) {
 	}
 
 	// set pprof router
-	pprof.Register(r, nil)
+	ginpprof.Wrap(r)
 }

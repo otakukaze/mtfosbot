@@ -5,8 +5,9 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
+
+	"git.trj.tw/golang/mtfosbot/module/es"
 
 	"git.trj.tw/golang/mtfosbot/module/config"
 	"git.trj.tw/golang/mtfosbot/module/context"
@@ -72,7 +73,13 @@ func GetLineMessage(c *context.Context) {
 		c.DataFormat("body type error")
 	}
 
-	fmt.Println("Line Hook ::: ", string(raw))
+	jsonMap := make(map[string]interface{})
+	if err := json.Unmarshal(raw, &jsonMap); err == nil {
+		es.PutLog("line", jsonMap)
+	}
+	defer func() {
+		jsonMap = nil
+	}()
 
 	events := struct {
 		Events []*lineobj.EventObject `json:"events"`

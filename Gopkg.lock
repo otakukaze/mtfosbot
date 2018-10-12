@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  branch = "master"
+  digest = "1:b763ac7907021d7c87885dd299ae8b57015243f179493b274b3b9af808ecbdcc"
+  name = "github.com/DeanThompson/ginpprof"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "8c0e31bfeaa87bd40412ee8a8ba383f5f700ff72"
+
+[[projects]]
   digest = "1:a62f6ed230a8cd138a9efbe718e7d0b0294f139266f5f55cd942769a9aac8de2"
   name = "github.com/PuerkitoBio/goquery"
   packages = ["."]
@@ -43,14 +51,6 @@
   pruneopts = "UT"
   revision = "cf4846e6a636a76237a28d9286f163c132e841bc"
   version = "v1.2"
-
-[[projects]]
-  digest = "1:fd66f3d5f4398879b0051e46e8421abdc93b5a6a64b645dc80986157fb99308d"
-  name = "github.com/gin-contrib/pprof"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "cea200e02ddddca4b843d75d32aa13c413549de9"
-  version = "v1.1"
 
 [[projects]]
   branch = "master"
@@ -257,9 +257,9 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/DeanThompson/ginpprof",
     "github.com/PuerkitoBio/goquery",
     "github.com/gin-contrib/cors",
-    "github.com/gin-contrib/pprof",
     "github.com/gin-gonic/contrib/sessions",
     "github.com/gin-gonic/gin",
     "github.com/gin-gonic/gin/binding",

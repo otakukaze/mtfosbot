@@ -4,7 +4,6 @@ import (
 	"encoding/gob"
 	"errors"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"path"
@@ -102,13 +101,13 @@ func PrintMemUsage() {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 	// For info on each, see: https://golang.org/pkg/runtime/#MemStats
-	fmt.Printf("Alloc = %v MiB", bToMb(m.Alloc))
-	fmt.Printf("\tTotalAlloc = %v MiB", bToMb(m.TotalAlloc))
-	fmt.Printf("\tSys = %v MiB", bToMb(m.Sys))
-	fmt.Printf("\tNumGC = %v\n", m.NumGC)
-	fmt.Printf("HeapAlloc = %v MiB", bToMb(m.HeapAlloc))
-	fmt.Printf("\t HeapSys = %v MiB", bToMb(m.HeapSys))
-	fmt.Printf("\t NextGC = %v MiB\n", bToMb(m.NextGC))
+	// fmt.Printf("Alloc = %v MiB", bToMb(m.Alloc))
+	// fmt.Printf("\tTotalAlloc = %v MiB", bToMb(m.TotalAlloc))
+	// fmt.Printf("\tSys = %v MiB", bToMb(m.Sys))
+	// fmt.Printf("\tNumGC = %v\n", m.NumGC)
+	// fmt.Printf("HeapAlloc = %v MiB", bToMb(m.HeapAlloc))
+	// fmt.Printf("\t HeapSys = %v MiB", bToMb(m.HeapSys))
+	// fmt.Printf("\t NextGC = %v MiB\n", bToMb(m.NextGC))
 
 	obj := map[string]interface{}{
 		"Alloc":        m.Alloc,
