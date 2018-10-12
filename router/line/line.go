@@ -7,8 +7,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	"git.trj.tw/golang/mtfosbot/module/es"
-
 	"git.trj.tw/golang/mtfosbot/module/config"
 	"git.trj.tw/golang/mtfosbot/module/context"
 	"git.trj.tw/golang/mtfosbot/module/line-message"
@@ -72,14 +70,6 @@ func GetLineMessage(c *context.Context) {
 	if raw, ok = rawbody.([]byte); !ok {
 		c.DataFormat("body type error")
 	}
-
-	jsonMap := make(map[string]interface{})
-	if err := json.Unmarshal(raw, &jsonMap); err == nil {
-		es.PutLog("line", jsonMap)
-	}
-	defer func() {
-		jsonMap = nil
-	}()
 
 	events := struct {
 		Events []*lineobj.EventObject `json:"events"`
