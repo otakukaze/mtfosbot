@@ -36,7 +36,10 @@ func NewServ() *gin.Engine {
 	// error catch
 	r.Use(gin.Recovery())
 	// enable cors
-	r.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowCredentials = true
+	corsConfig.AllowAllOrigins = true
+	r.Use(cors.New(corsConfig))
 	// session
 	r.Use(sessions.Sessions("ginsess", store))
 
