@@ -39,9 +39,6 @@ func NewServ() *gin.Engine {
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowCredentials = true
 	corsConfig.AllowAllOrigins = true
-	corsConfig.AllowOriginFunc = func(origin string) bool {
-		return true
-	}
 	r.Use(cors.New(corsConfig))
 	// session
 	r.Use(sessions.Sessions("ginsess", store))
