@@ -18,7 +18,10 @@ func GetLineList(c *context.Context) {
 	list := make([]map[string]interface{}, 0)
 
 	if ls != nil {
-		for v := range ls {
+		for _, v := range ls {
+			if v == nil {
+				continue
+			}
 			list = append(list, utils.ToMap(v))
 		}
 	}
