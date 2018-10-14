@@ -38,7 +38,11 @@ func NewServ() *gin.Engine {
 	// enable cors
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowCredentials = true
-	corsConfig.AllowAllOrigins = true
+	corsConfig.AllowOrigins = []string{
+		"http://localhost:8080",
+		"http://localhost:8081",
+		"https://bot.trj.tw",
+	}
 	r.Use(cors.New(corsConfig))
 	// session
 	r.Use(sessions.Sessions("ginsess", store))
