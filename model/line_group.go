@@ -51,6 +51,15 @@ func GetLineGroup(id string) (g *LineGroup, err error) {
 	return
 }
 
+// GetLineGroupList -
+func GetLineGroupList() (ls []*LineGroup, err error) {
+	err = x.Select(&ls, `select * from "public"."line_group" order by "name"`)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	return
+}
+
 // AddLineGroup -
 func AddLineGroup(name, owner string, notify bool) (g *LineGroup, err error) {
 	g = &LineGroup{}
