@@ -49,7 +49,15 @@ func GetLineMessageLog(c *context.Context) {
 	g := c.DefaultQuery("group", "")
 	u := c.DefaultQuery("user", "")
 
-	count, err := model.GetLineMessageLogCount()
+	where := make(map[string]string)
+	if len(g) > 0 {
+		where["group"] = g
+	}
+	if len(u) > 0 {
+		where["user"] = u
+	}
+
+	count, err := model.GetLineMessageLogCount(where)
 	if err != nil {
 		c.ServerError(nil)
 		return
