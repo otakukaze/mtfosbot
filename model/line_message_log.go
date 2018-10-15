@@ -34,7 +34,7 @@ func AddLineMessageLog(g, u, msg, t string) (msglog *LineMessageLog, err error) 
 // GetLineMessageLogCount -
 func GetLineMessageLogCount(where ...interface{}) (c int, err error) {
 	query := `select count(*) as c from "public"."line_message_log"`
-	values := make([]string, 0)
+	values := make([]interface{}, 0)
 	if len(where) > 0 {
 		if whereMap, ok := where[0].(map[string]string); ok {
 			str := ""
@@ -52,7 +52,7 @@ func GetLineMessageLogCount(where ...interface{}) (c int, err error) {
 			}
 		}
 	}
-	err = x.Get(&c, query, values)
+	err = x.Get(&c, query, values...)
 	return
 }
 
