@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"strconv"
 
 	"git.trj.tw/golang/mtfosbot/model"
@@ -59,6 +60,7 @@ func GetLineMessageLog(c *context.Context) {
 
 	count, err := model.GetLineMessageLogCount(where)
 	if err != nil {
+		fmt.Println("count error :::: ", err)
 		c.ServerError(nil)
 		return
 	}
