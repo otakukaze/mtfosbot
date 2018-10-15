@@ -46,7 +46,7 @@ func (p *DonateSetting) InsertOrUpdate() (err error) {
 	"end_date" = :end_date,
 	"target_amount" = :target_amount,
 	"title" = :title,
-	"start_amount" = :start_amount`
+	"start_amount" = :start_amount, "mtime" = now()`
 	_, err = x.NamedExec(query, p)
 	return
 }

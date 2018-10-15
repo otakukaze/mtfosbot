@@ -85,7 +85,7 @@ func (p *TwitchChannel) Add() (err error) {
 
 // UpdateStream -
 func (p *TwitchChannel) UpdateStream(streamID string) (err error) {
-	query := `update "public"."twitch_channel" set "laststream" = $1 where "id" = $2`
+	query := `update "public"."twitch_channel" set "laststream" = $1, "mtime" = now() where "id" = $2`
 	_, err = x.Exec(query, streamID, p.ID)
 	if err != nil {
 		return
@@ -96,7 +96,7 @@ func (p *TwitchChannel) UpdateStream(streamID string) (err error) {
 
 // UpdateName -
 func (p *TwitchChannel) UpdateName(name string) (err error) {
-	_, err = x.Exec(`update "public"."twitch_channel" set "name" = $1 where "id" = $2`, name, p.ID)
+	_, err = x.Exec(`update "public"."twitch_channel" set "name" = $1, "mtime" = now() where "id" = $2`, name, p.ID)
 	if err != nil {
 		return
 	}
@@ -107,14 +107,14 @@ func (p *TwitchChannel) UpdateName(name string) (err error) {
 // UpdateJoin -
 func (p *TwitchChannel) UpdateJoin(join bool) (err error) {
 	p.Join = join
-	_, err = x.NamedExec(`update "public"."twitch_channel" set "join" = :join where "id" = :id`, p)
+	_, err = x.NamedExec(`update "public"."twitch_channel" set "join" = :join, "mtime" = now() where "id" = :id`, p)
 	return
 }
 
 // UpdateOpayID -
 func (p *TwitchChannel) UpdateOpayID(id string) (err error) {
 	p.OpayID = id
-	_, err = x.NamedExec(`update "public"."twitch_channel" set "opayid" = :opayid where "id" = :id`, p)
+	_, err = x.NamedExec(`update "public"."twitch_channel" set "opayid" = :opayid, "mtime" = now() where "id" = :id`, p)
 	return
 }
 
