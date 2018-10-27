@@ -57,14 +57,14 @@ func (p *YoutubeChannel) Add() (err error) {
 // UpdateLastVideo -
 func (p *YoutubeChannel) UpdateLastVideo(vid string) (err error) {
 	p.LastVideo = vid
-	_, err = x.NamedExec(`update "public"."youtube_channel" set "lastvideo" = :lastvideo where "id" = :id`, p)
+	_, err = x.NamedExec(`update "public"."youtube_channel" set "lastvideo" = :lastvideo, "mtime" = now() where "id" = :id`, p)
 	return
 }
 
 // UpdateExpire -
 func (p *YoutubeChannel) UpdateExpire(t int64) (err error) {
 	p.Expire = t
-	_, err = x.NamedExec(`update "public"."youtube_channel" set "expire" = :expire where "id" = :id`, p)
+	_, err = x.NamedExec(`update "public"."youtube_channel" set "expire" = :expire, "mtime" = now() where "id" = :id`, p)
 	if err != nil {
 		return err
 	}

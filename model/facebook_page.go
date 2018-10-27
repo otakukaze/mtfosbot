@@ -51,7 +51,7 @@ func (p *FacebookPage) AddPage() (err error) {
 
 // UpdatePost -
 func (p *FacebookPage) UpdatePost(postID string) (err error) {
-	query := `update "public"."facebook_page" set "lastpost" = $1 where id = $2`
+	query := `update "public"."facebook_page" set "lastpost" = $1, "mtime" = now() where id = $2`
 	_, err = x.Exec(query, postID, p.ID)
 	if err != nil {
 		return
