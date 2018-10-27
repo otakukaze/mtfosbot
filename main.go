@@ -14,7 +14,6 @@ import (
 
 	"git.trj.tw/golang/mtfosbot/module/apis/twitch"
 	"git.trj.tw/golang/mtfosbot/module/cmd"
-	"git.trj.tw/golang/mtfosbot/module/es"
 	"git.trj.tw/golang/mtfosbot/module/options"
 	"git.trj.tw/golang/mtfosbot/module/utils"
 
@@ -42,11 +41,6 @@ func main() {
 	}
 
 	err := config.LoadConfig(runOptions.Config)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = es.NewClient()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -108,23 +102,6 @@ func PrintMemUsage() {
 	// fmt.Printf("HeapAlloc = %v MiB", bToMb(m.HeapAlloc))
 	// fmt.Printf("\t HeapSys = %v MiB", bToMb(m.HeapSys))
 	// fmt.Printf("\t NextGC = %v MiB\n", bToMb(m.NextGC))
-
-	obj := map[string]interface{}{
-		"Alloc":        m.Alloc,
-		"Sys":          m.Sys,
-		"HeapAlloc":    m.HeapAlloc,
-		"HeapSys":      m.HeapSys,
-		"HeapIdle":     m.HeapIdle,
-		"HeapInuse":    m.HeapInuse,
-		"HeapReleased": m.HeapReleased,
-		"StackInuse":   m.StackInuse,
-		"StackSys":     m.StackSys,
-		"GCSys":        m.GCSys,
-		"NextGC":       m.NextGC,
-		"NumGC":        m.NumGC,
-	}
-
-	es.PutLog("memory", obj)
 }
 func bToMb(b uint64) uint64 {
 	return b / 1024 / 1024
