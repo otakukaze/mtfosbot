@@ -6,8 +6,7 @@ import (
 	"time"
 
 	"git.trj.tw/golang/mtfosbot/model"
-
-	"gopkg.in/irc.v2"
+	"github.com/go-irc/irc"
 
 	"git.trj.tw/golang/mtfosbot/module/config"
 )
