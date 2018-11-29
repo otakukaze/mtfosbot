@@ -3,6 +3,7 @@ package background
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"git.trj.tw/golang/mtfosbot/model"
 	"git.trj.tw/golang/mtfosbot/module/apis/line"
@@ -45,6 +46,10 @@ func checkStream(ch *model.TwitchChannel, info *twitch.StreamInfo) {
 		return
 	}
 
+	// 開台間隔小於10分鐘不通知
+	if time.Now().Unix()-ch.Mtime.Unix() < 600 {
+		return
+	}
 	link := fmt.Sprintf("https://twitch.tv/%s", ch.Name)
 	for _, v := range ch.Groups {
 		if v.Notify {
