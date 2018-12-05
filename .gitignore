@@ -1,4 +1,5 @@
 config.yml
 .vscode
 .idea
+module/schema/static.go*.swp
 module/schema/static.go
