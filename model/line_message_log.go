@@ -57,7 +57,10 @@ func GetLineMessageLogCount(where ...interface{}) (c int, err error) {
 }
 
 // GetLineMessageLogList -
-func GetLineMessageLogList(g, u string, offset, limit int) (logs []*LineMessageLogWithUG, err error) {
+func GetLineMessageLogList(g, u string, offset, limit int, orderArg string) (logs []*LineMessageLogWithUG, err error) {
+	if orderArg != "asc" && orderArg != "desc" {
+		orderArg = "desc"
+	}
 	params := struct {
 		Group string `db:"group"`
 		User  string `db:"user"`
@@ -81,7 +84,7 @@ func GetLineMessageLogList(g, u string, offset, limit int) (logs []*LineMessageL
 		}
 		params.User = u
 	}
-	order := `order by m.ctime desc`
+	order := fmt.Sprintf(`order by m.ctime %s`, orderArg)
 	pager := fmt.Sprintf("offset %d limit %d", offset, limit)
 
 	stmt, err := x.PrepareNamed(fmt.Sprintf("%s %s %s %s", query, where, order, pager))
