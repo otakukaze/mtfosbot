@@ -3,3 +3,4 @@ config.yml
 .idea
 module/schema/static.go*.swp
 module/schema/static.go
+*.swp

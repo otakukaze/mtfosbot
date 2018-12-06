@@ -4,12 +4,14 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"strings"
 	"time"
 
 	"git.trj.tw/golang/mtfosbot/model"
 	lineapi "git.trj.tw/golang/mtfosbot/module/apis/line"
 	"git.trj.tw/golang/mtfosbot/module/context"
+	"git.trj.tw/golang/mtfosbot/module/utils"
 )
 
 type feed struct {
@@ -91,12 +93,15 @@ func GetNotifyWebhook(c *context.Context) {
 		return
 	}
 
+	log.Println("hook data", utils.ToMap(hook))
+
 	if len(hook.Entry) == 0 {
 		c.Success(nil)
 		return
 	}
 
 	yt, err := model.GetYoutubeChannelWithID(id)
+	log.Println("youtube and error", yt, err)
 	if err != nil || yt == nil {
 		c.ServerError(nil)
 		return
@@ -109,6 +114,13 @@ func GetNotifyWebhook(c *context.Context) {
 
 	err = yt.UpdateLastVideo(hook.Entry[0].ID)
 	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+
+	err = yt.GetGroups()
+	if err != nil {
+		log.Println("get groups error ::::", err)
 		c.ServerError(nil)
 		return
 	}
