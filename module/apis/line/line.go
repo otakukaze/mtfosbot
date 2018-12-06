@@ -69,6 +69,7 @@ func getHeaders() map[string]string {
 
 // PushMessage -
 func PushMessage(target string, message interface{}) {
+	log.Println("push target :::: ", target)
 	if len(target) == 0 {
 		return
 	}
@@ -95,6 +96,7 @@ func PushMessage(target string, message interface{}) {
 	body.Messages = append(body.Messages, message)
 	dataByte, err := json.Marshal(body)
 	if err != nil {
+		log.Println("to json error ::::", err)
 		return
 	}
 
@@ -102,6 +104,7 @@ func PushMessage(target string, message interface{}) {
 
 	apiURL, ok := getURL(urlPath)
 	if !ok {
+		log.Println("get url fail ::::::")
 		return
 	}
 
@@ -114,6 +117,7 @@ func PushMessage(target string, message interface{}) {
 
 	req, err := apis.GetRequest(reqObj)
 	if err != nil {
+		log.Println("get req fail :::::: ", err)
 		return
 	}
 
