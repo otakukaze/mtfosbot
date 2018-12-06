@@ -130,6 +130,7 @@ func GetNotifyWebhook(c *context.Context) {
 		log.Println("group data :::: ", v, v.Notify, v.Name)
 		if v.Notify {
 			str := v.Tmpl
+			log.Println("template :::: ", str)
 			if len(str) == 0 {
 				str = fmt.Sprintf("%s\n%s", hook.Entry[0].Title, hook.Entry[0].Link.Href)
 			} else {
@@ -140,6 +141,7 @@ func GetNotifyWebhook(c *context.Context) {
 			msg := &lineapi.TextMessage{
 				Text: str,
 			}
+			log.Println("msg ::::: ", msg)
 
 			lineapi.PushMessage(v.ID, msg)
 		}

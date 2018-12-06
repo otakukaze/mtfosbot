@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -118,6 +119,7 @@ func PushMessage(target string, message interface{}) {
 
 	_, err = http.DefaultClient.Do(req)
 	if err != nil {
+		log.Println("send to line error :::: ", err)
 		return
 	}
 }
