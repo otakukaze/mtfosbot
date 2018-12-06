@@ -49,6 +49,10 @@ func GetLineMessageLog(c *context.Context) {
 
 	g := c.DefaultQuery("group", "")
 	u := c.DefaultQuery("user", "")
+	order := c.DefaultQuery("order", "desc")
+	if order != "asc" && order != "desc" {
+		order = "desc"
+	}
 
 	where := make(map[string]string)
 	if len(g) > 0 {
@@ -66,8 +70,12 @@ func GetLineMessageLog(c *context.Context) {
 	}
 
 	page := utils.CalcPage(count, numP, numMax)
+	if numP == -1 {
+		numP = page.Total
+	}
+	page = utils.CalcPage(count, numP, numMax)
 
-	logs, err := model.GetLineMessageLogList(g, u, page.Offset, page.Limit)
+	logs, err := model.GetLineMessageLogList(g, u, page.Offset, page.Limit, order)
 	if err != nil {
 		c.ServerError(nil)
 		return
