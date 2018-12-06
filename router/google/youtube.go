@@ -127,7 +127,7 @@ func GetNotifyWebhook(c *context.Context) {
 	log.Println("yt groups ::::: ", yt.Groups)
 
 	for _, v := range yt.Groups {
-		log.Println("group data :::: ", v, v.Notify, v.Name)
+		log.Println("group data :::: ", v, v.Notify, v.Name, v.ID)
 		if v.Notify == true {
 			str := v.Tmpl
 			log.Println("template :::: ", str)
