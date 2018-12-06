@@ -124,8 +124,10 @@ func GetNotifyWebhook(c *context.Context) {
 		c.ServerError(nil)
 		return
 	}
+	log.Println("yt groups ::::: ", yt.Groups)
 
 	for _, v := range yt.Groups {
+		log.Println("group data :::: ", v)
 		if v.Notify {
 			str := v.Tmpl
 			if len(str) == 0 {
