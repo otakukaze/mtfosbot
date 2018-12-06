@@ -138,7 +138,7 @@ func GetNotifyWebhook(c *context.Context) {
 				str = strings.Replace(str, "{txt}", hook.Entry[0].Title, -1)
 			}
 
-			msg := &lineapi.TextMessage{
+			msg := lineapi.TextMessage{
 				Text: str,
 			}
 			log.Println("msg ::::: ", msg)
