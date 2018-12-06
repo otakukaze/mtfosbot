@@ -91,6 +91,7 @@ func PushMessage(target string, message interface{}) {
 		message = m
 		break
 	default:
+		log.Println("no match message type")
 		return
 	}
 	body.Messages = append(body.Messages, message)
