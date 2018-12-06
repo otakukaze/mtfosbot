@@ -98,3 +98,24 @@ func GetLineMessageLog(c *context.Context) {
 		},
 	})
 }
+
+// GetCommands -
+func GetCommandList(c *context.Context) {
+	numP := 1
+	if p, ok := c.GetQuery("p"); ok {
+		if i, err := strconv.Atoi(p); err == nil {
+			numP = i
+		}
+	}
+
+	numMax := 20
+	if max, ok := c.GetQuery("max"); ok {
+		if m, err := strconv.Atoi(max); err == nil {
+			numMax = m
+		}
+	}
+
+	g := c.DefaultQuery("group", "")
+	cmd := c.DefaultQuery("cmd", "")
+
+}
