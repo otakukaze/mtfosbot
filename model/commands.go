@@ -135,3 +135,29 @@ func AddCommand(cmdkey, message, group string) (cmd *Commands, err error) {
 	}
 	return
 }
+
+// CheckCommand -
+func CheckCommand(cmd, group string) (exist bool, err error) {
+	if len(cmd) == 0 {
+		return false, errors.New("cmd is empty")
+	}
+	query := `select count(*) as c from "public"."commands" where "cmd" = $1 and "group" = $2`
+	c := 0
+
+	err = x.Get(&c, query, cmd, group)
+	if err != nil {
+		return false, err
+	}
+
+	return c > 0, nil
+}
+
+// DeleteCommand -
+func DeleteCommand(cmd, group string) (err error) {
+	if len(cmd) == 0 {
+		return errors.New("cmd is empty")
+	}
+	query := `delete from "public"."commands" where "cmd" = $1 and "group" = $2`
+	_, err = x.Exec(query, cmd, group)
+	return
+}

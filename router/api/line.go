@@ -160,7 +160,6 @@ func GetCommandList(c *context.Context) {
 
 // AddLineGroupCommand -
 func AddLineGroupCommand(c *context.Context) {
-	// TODO
 	bodyStruct := struct {
 		Cmd     string `json:"cmd"`
 		Message string `json:"message"`
@@ -187,4 +186,32 @@ func AddLineGroupCommand(c *context.Context) {
 	c.Success(map[string]interface{}{
 		"cmd": utils.ToMap(cmd),
 	})
+}
+
+// DeleteLineGroupCommand -
+func DeleteLineGroupCommand(c *context.Context) {
+	cmd, ok := c.Params.Get("cmd")
+	if !ok {
+		c.DataFormat(nil)
+		return
+	}
+	g := c.DefaultQuery("group", "")
+
+	exist, err := model.CheckCommand(cmd, g)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+	if !exist {
+		c.NotFound(nil)
+		return
+	}
+	// TODO
+	err = model.DeleteCommand(cmd, g)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+
+	c.Success(nil)
 }
