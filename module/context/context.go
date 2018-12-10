@@ -15,7 +15,7 @@ type Context struct {
 type CustomMiddle func(*Context)
 
 // PatchCtx - patch ctx to custom middle
-func PatchCtx(handler func(*Context)) gin.HandlerFunc {
+func PatchCtx(handler CustomMiddle) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := &Context{
 			Context: c,

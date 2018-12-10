@@ -157,3 +157,34 @@ func GetCommandList(c *context.Context) {
 		},
 	})
 }
+
+// AddLineGroupCommand -
+func AddLineGroupCommand(c *context.Context) {
+	// TODO
+	bodyStruct := struct {
+		Cmd     string `json:"cmd"`
+		Message string `json:"message"`
+		Group   string `json:"group"`
+	}{}
+
+	err := c.BindData(&bodyStruct)
+	if err != nil {
+		c.DataFormat(nil)
+		return
+	}
+
+	if len(bodyStruct.Cmd) == 0 || len(bodyStruct.Message) == 0 {
+		c.DataFormat(nil)
+		return
+	}
+
+	cmd, err := model.AddCommand(bodyStruct.Cmd, bodyStruct.Message, bodyStruct.Group)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+
+	c.Success(map[string]interface{}{
+		"cmd": utils.ToMap(cmd),
+	})
+}

@@ -121,3 +121,17 @@ func GetCommands(where map[string]string, offset, limit int, order map[string]st
 
 	return
 }
+
+// AddCommand -
+func AddCommand(cmdkey, message, group string) (cmd *Commands, err error) {
+	if len(cmdkey) == 0 || len(message) == 0 {
+		return nil, errors.New("cmd or message is empty")
+	}
+	query := `insert into "public"."commands" ("cmd", "message", "group") values ($1, $2, $3) returning *`
+	cmd = &Commands{}
+	err = x.Get(cmd, query, cmdkey, message, group)
+	if err != nil {
+		return nil, err
+	}
+	return
+}
