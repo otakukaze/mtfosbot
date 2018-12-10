@@ -71,6 +71,7 @@ func SetRoutes(r *gin.Engine) {
 		apiGroup.POST("/logout", context.PatchCtx(api.UserLogout))
 		apiGroup.GET("/line/logs", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetLineMessageLog))
 		apiGroup.GET("/line/groups", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetLineList))
+		apiGroup.GET("/line/cmds", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetCommandList))
 		apiGroup.GET("/session", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetSessionData))
 		apiGroup.GET("/twitch/channel/:chid/opay/bar", context.PatchCtx(api.GetDonateBarStatus))
 	}

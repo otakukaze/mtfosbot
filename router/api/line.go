@@ -81,7 +81,7 @@ func GetLineMessageLog(c *context.Context) {
 		return
 	}
 
-	resMap := make([]map[string]interface{}, 0)
+	resMap := make([]map[string]interface{}, len(logs))
 
 	for _, v := range logs {
 		m := utils.ToMap(v.LineMessageLog)
@@ -99,7 +99,7 @@ func GetLineMessageLog(c *context.Context) {
 	})
 }
 
-// GetCommands -
+// GetCommandList -
 func GetCommandList(c *context.Context) {
 	numP := 1
 	if p, ok := c.GetQuery("p"); ok {
@@ -118,4 +118,42 @@ func GetCommandList(c *context.Context) {
 	g := c.DefaultQuery("group", "")
 	cmd := c.DefaultQuery("cmd", "")
 
+	whereMap := make(map[string]string)
+
+	if len(g) > 0 {
+		whereMap["group"] = g
+	}
+	if len(cmd) > 0 {
+		whereMap["cmd"] = cmd
+	}
+
+	count, err := model.GetCommandCount(whereMap)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+
+	page := utils.CalcPage(count, numP, numMax)
+
+	cmds, err := model.GetCommands(whereMap, page.Offset, page.Limit, nil)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+
+	cmdList := make([]map[string]interface{}, len(cmds))
+	for _, v := range cmds {
+		tmp := utils.ToMap(v)
+		tmp["group_name"] = v.GroupName
+		cmdList = append(cmdList, tmp)
+		tmp = nil
+	}
+
+	c.Success(map[string]interface{}{
+		"list": cmdList,
+		"page": map[string]interface{}{
+			"cur":   page.Page,
+			"total": page.Total,
+		},
+	})
 }
