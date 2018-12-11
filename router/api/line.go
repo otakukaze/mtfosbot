@@ -145,10 +145,10 @@ func GetCommandList(c *context.Context) {
 	}
 
 	cmdList := make([]map[string]interface{}, len(cmds))
-	for _, v := range cmds {
+	for k, v := range cmds {
 		tmp := utils.ToMap(v)
 		tmp["group_name"] = v.GroupName
-		cmdList = append(cmdList, tmp)
+		cmdList[k] = tmp
 		tmp = nil
 	}
 
