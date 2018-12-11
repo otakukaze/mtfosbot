@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 
 	"git.trj.tw/golang/mtfosbot/model"
@@ -129,6 +130,7 @@ func GetCommandList(c *context.Context) {
 
 	count, err := model.GetCommandCount(whereMap)
 	if err != nil {
+		log.Println("error :::: ", err)
 		c.ServerError(nil)
 		return
 	}
@@ -137,6 +139,7 @@ func GetCommandList(c *context.Context) {
 
 	cmds, err := model.GetCommands(whereMap, page.Offset, page.Limit, nil)
 	if err != nil {
+		log.Println("list error :::: ", err)
 		c.ServerError(nil)
 		return
 	}
