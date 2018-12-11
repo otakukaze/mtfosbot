@@ -69,7 +69,7 @@ func GetCommandCount(where ...interface{}) (c int, err error) {
 			}
 		}
 	}
-	err = x.Get(&c, query, values)
+	err = x.Get(&c, query, values...)
 	return
 }
 
@@ -118,6 +118,8 @@ func GetCommands(where map[string]string, offset, limit int, order map[string]st
 			str += fmt.Sprintf(` "%s" %s `, k, v)
 		}
 	}
+
+	err = x.Select(cmds, query, values...)
 
 	return
 }
