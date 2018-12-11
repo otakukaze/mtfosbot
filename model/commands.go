@@ -75,7 +75,7 @@ func GetCommandCount(where ...interface{}) (c int, err error) {
 
 // GetCommands -
 func GetCommands(where map[string]string, offset, limit int, order map[string]string) (cmds []*CommandsWithGroup, err error) {
-	query := `select c.*, (case when g.name is null then '' else g.name end) as group_name from "public"."commands"
+	query := `select c.*, (case when g.name is null then '' else g.name end) as group_name from "public"."commands" c
 		left join "public"."line_group" g
 		on g.id = c.group `
 	values := make([]interface{}, (len(where) + len(order)))
