@@ -161,3 +161,14 @@ func DeleteCommand(cmd, group string) (err error) {
 	_, err = x.Exec(query, cmd, group)
 	return
 }
+
+// UpdateCommand -
+func UpdateCommand(cmd, group, message string) (err error) {
+	if len(cmd) == 0 || len(message) == 0 {
+		return errors.New("cmd or message is empty")
+	}
+
+	query := `update "public"."commands" set "message" = $1, "mtime" = now() where "cmd" = $2 and "group" = $3`
+	_, err = x.Exec(query, message, cmd, group)
+	return
+}

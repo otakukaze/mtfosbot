@@ -73,6 +73,8 @@ func SetRoutes(r *gin.Engine) {
 		apiGroup.GET("/line/groups", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetLineList))
 		apiGroup.GET("/line/cmds", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetCommandList))
 		apiGroup.POST("/line/cmd", context.PatchCtx(api.CheckSession), context.PatchCtx(api.AddLineGroupCommand))
+		apiGroup.DELETE("/line/cmd/:cmd", context.PatchCtx(api.CheckSession), context.PatchCtx(api.DeleteLineGroupCommand))
+		apiGroup.PUT("/line/cmd/:cmd", context.PatchCtx(api.CheckSession), context.PatchCtx(api.EditLineGroupCommand))
 		apiGroup.GET("/session", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetSessionData))
 		apiGroup.GET("/twitch/channel/:chid/opay/bar", context.PatchCtx(api.GetDonateBarStatus))
 	}

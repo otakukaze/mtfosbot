@@ -203,11 +203,47 @@ func DeleteLineGroupCommand(c *context.Context) {
 		return
 	}
 	if !exist {
-		c.NotFound(nil)
+		c.NotFound("command not found")
 		return
 	}
-	// TODO
 	err = model.DeleteCommand(cmd, g)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+
+	c.Success(nil)
+}
+
+// EditLineGroupCommand -
+func EditLineGroupCommand(c *context.Context) {
+	bodyStruct := struct {
+		Message string `json:"message"`
+	}{}
+	cmd, ok := c.Params.Get("cmd")
+	if !ok {
+		c.DataFormat(nil)
+		return
+	}
+	g := c.DefaultQuery("group", "")
+
+	err := c.BindData(&bodyStruct)
+	if err != nil {
+		c.DataFormat(nil)
+		return
+	}
+
+	exist, err := model.CheckCommand(cmd, g)
+	if err != nil {
+		c.ServerError(nil)
+		return
+	}
+	if !exist {
+		c.NotFound("command not found")
+		return
+	}
+
+	err = model.UpdateCommand(cmd, g, bodyStruct.Message)
 	if err != nil {
 		c.ServerError(nil)
 		return
