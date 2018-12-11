@@ -119,7 +119,7 @@ func GetCommands(where map[string]string, offset, limit int, order map[string]st
 		}
 	}
 
-	err = x.Select(cmds, query, values...)
+	err = x.Select(&cmds, query, values...)
 
 	return
 }
