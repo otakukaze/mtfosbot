@@ -172,6 +172,58 @@ func GetUserDataByName(login string) (userInfo *UserInfo) {
 	return apiData.Data[0]
 }
 
+// GetUserDataByID -
+func GetUserDataByID(id string) (userInfo *UserInfo) {
+	if len(id) == 0 {
+		return
+	}
+	qsValue := url.Values{}
+	qsValue.Add("id", id)
+	url, ok := getURL("/helix/users", qsValue.Encode())
+	if !ok {
+		return
+	}
+
+	reqObj := apis.RequestObj{}
+	reqObj.Headers = getHeaders()
+	reqObj.Method = "GET"
+	reqObj.URL = url
+	req, err := apis.GetRequest(reqObj)
+	if err != nil {
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	if !strings.HasPrefix(resp.Header.Get("Content-Type"), "application/json") {
+		return
+	}
+
+	apiData := struct {
+		Data []*UserInfo `json:"data"`
+	}{}
+
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(bodyBytes, &apiData)
+	if err != nil {
+		return
+	}
+
+	if len(apiData.Data) == 0 {
+		return
+	}
+
+	return apiData.Data[0]
+}
+
 // StreamInfo -
 type StreamInfo struct {
 	ID           string `json:"id"`

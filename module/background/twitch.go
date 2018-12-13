@@ -50,6 +50,14 @@ func checkStream(ch *model.TwitchChannel, info *twitch.StreamInfo) {
 	if time.Now().Unix()-ch.Mtime.Unix() < 600 {
 		return
 	}
+
+	chData := twitch.GetUserDataByID(ch.ID)
+	if chData != nil {
+		if chData.Login != ch.Name {
+			ch.UpdateName(chData.Login)
+		}
+	}
+
 	link := fmt.Sprintf("https://twitch.tv/%s", ch.Name)
 	for _, v := range ch.Groups {
 		if v.Notify {
