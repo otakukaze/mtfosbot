@@ -67,9 +67,48 @@ func ToMap(ss interface{}) map[string]interface{} {
 		tag := string(t.Type().Field(i).Tag)
 		str := mtag.FindStringSubmatch(tag)
 		name := t.Type().Field(i).Name
+		leveling := false
 		if len(str) > 1 {
-			name = str[1]
+			strArr := strings.Split(str[1], ",")
+			name = strArr[0]
+			if len(strArr) > 1 && strArr[1] == "<<" {
+				leveling = true
+			}
 		}
+
+		if f.Kind() == reflect.Slice {
+			if name == "-" {
+				continue
+			}
+			if f.Len() > 0 && f.Index(0).Kind() != reflect.Struct {
+				smap[name] = f.Interface()
+				continue
+			}
+
+			tmp := make([]map[string]interface{}, f.Len())
+			for i := 0; i < f.Len(); i++ {
+				tmp[i] = ToMap(f.Index(i).Interface())
+			}
+			smap[name] = tmp
+			continue
+		}
+
+		if f.Kind() == reflect.Struct {
+			if name == "-" && leveling == false {
+				continue
+			}
+
+			tmp := ToMap(f.Interface())
+			if leveling == true {
+				for k, v := range tmp {
+					smap[k] = v
+				}
+			} else if name != "-" && leveling == false {
+				smap[name] = tmp
+			}
+			continue
+		}
+
 		if name != "-" {
 			smap[name] = f.Interface()
 		}

@@ -18,7 +18,7 @@ type Commands struct {
 
 // CommandsWithGroup -
 type CommandsWithGroup struct {
-	Commands
+	Commands  `cc:"-,<<"`
 	GroupName string `db:"group_name" cc:"group_name"`
 }
 
