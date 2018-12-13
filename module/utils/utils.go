@@ -98,13 +98,13 @@ func ToMap(ss interface{}) map[string]interface{} {
 				continue
 			}
 
-			tmp := ToMap(f.Interface())
 			if leveling == true {
+				tmp := ToMap(f.Interface())
 				for k, v := range tmp {
 					smap[k] = v
 				}
 			} else if name != "-" && leveling == false {
-				smap[name] = tmp
+				smap[name] = f.Interface()
 			}
 			continue
 		}

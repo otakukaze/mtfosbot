@@ -1,6 +1,39 @@
 package utils
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
+
+// Commands - struct
+type Commands struct {
+	Cmd     string    `db:"cmd" cc:"cmd"`
+	Message string    `db:"message" cc:"message"`
+	Group   string    `db:"group" cc:"group"`
+	Ctime   time.Time `db:"ctime" cc:"ctime"`
+	Mtime   time.Time `db:"mtime" cc:"ctime"`
+}
+
+// CommandsWithGroup -
+type CommandsWithGroup struct {
+	Commands  `cc:"-,<<"`
+	GroupName string `db:"group_name" cc:"group_name"`
+}
+
+func TestToMap(t *testing.T) {
+	cmd := Commands{}
+	cmd.Cmd = "test"
+	cmd.Message = "test message"
+	cmd.Group = ""
+	cmd.Ctime = time.Now()
+	cmd.Mtime = time.Now()
+
+	cmdWGroup := CommandsWithGroup{}
+	cmdWGroup.Commands = cmd
+	cmdWGroup.GroupName = "asd"
+
+	ToMap(cmdWGroup)
+}
 
 func TestCalcPage(t *testing.T) {
 	page := CalcPage(10, 1, 10)

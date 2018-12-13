@@ -18,9 +18,9 @@ type LineMessageLog struct {
 
 // LineMessageLogWithUG -
 type LineMessageLogWithUG struct {
-	LineMessageLog
-	GroupName string `db:"group_name" cc:"group_name"`
-	UserName  string `db:"user_name" cc:"user_name"`
+	LineMessageLog `cc:"-,<<"`
+	GroupName      string `db:"group_name" cc:"group_name"`
+	UserName       string `db:"user_name" cc:"user_name"`
 }
 
 // AddLineMessageLog -
