@@ -84,11 +84,11 @@ func GetLineMessageLog(c *context.Context) {
 
 	resMap := make([]map[string]interface{}, len(logs))
 
-	for _, v := range logs {
+	for k, v := range logs {
 		m := utils.ToMap(v.LineMessageLog)
 		m["group_name"] = v.GroupName
 		m["user_name"] = v.UserName
-		resMap = append(resMap, m)
+		resMap[k] = m
 	}
 
 	c.Success(map[string]interface{}{
