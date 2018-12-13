@@ -6,4 +6,4 @@ pipeline:
     dockerfile: Dockerfile
     tags: [latest, "${DRONE_COMMIT}"]
     when:
-      branch: release
+      branch: master
