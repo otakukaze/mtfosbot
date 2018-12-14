@@ -29,6 +29,13 @@ type ImageMessage struct {
 	PreviewImageURL    string `json:"previewImageUrl"`
 }
 
+// VideoMessage - line video message object
+type VideoMessage struct {
+	Type               string `json:"type"`
+	OriginalContentURL string `json:"OriginalContentUrl"`
+	PreviewImageURL    string `json:"previewImageUrl"`
+}
+
 // LineUserInfo -
 type LineUserInfo struct {
 	DisplayName string `json:"displayName"`
@@ -67,6 +74,35 @@ func getHeaders() map[string]string {
 	return m
 }
 
+func checkMessageObject(m interface{}) interface{} {
+	if m == nil {
+		return nil
+	}
+
+	var obj interface{}
+	switch m.(type) {
+	case ImageMessage:
+		tmp := (m.(ImageMessage))
+		tmp.Type = "image"
+		obj = tmp
+		break
+	case TextMessage:
+		tmp := (m.(TextMessage))
+		tmp.Type = "text"
+		obj = tmp
+		break
+	case VideoMessage:
+		tmp := (m.(VideoMessage))
+		tmp.Type = "video"
+		obj = tmp
+		break
+	default:
+		return nil
+	}
+
+	return obj
+}
+
 // PushMessage -
 func PushMessage(target string, message interface{}) {
 	log.Println("push target :::: ", target)
@@ -79,21 +115,8 @@ func PushMessage(target string, message interface{}) {
 		To: target,
 	}
 
-	switch message.(type) {
-	case ImageMessage:
-		m := (message.(ImageMessage))
-		m.Type = "image"
-		message = m
-		break
-	case TextMessage:
-		m := (message.(TextMessage))
-		m.Type = "text"
-		message = m
-		break
-	default:
-		log.Println("no match message type")
-		return
-	}
+	message = checkMessageObject(message)
+
 	body.Messages = append(body.Messages, message)
 	dataByte, err := json.Marshal(body)
 	if err != nil {
@@ -140,21 +163,7 @@ func ReplyMessage(replyToken string, message interface{}) {
 		ReplyToken: replyToken,
 	}
 
-	switch message.(type) {
-	case *ImageMessage:
-		m := (message.(*ImageMessage))
-		m.Type = "image"
-		message = m
-		break
-	case *TextMessage:
-		m := (message.(*TextMessage))
-		m.Type = "text"
-		message = m
-		break
-	default:
-		fmt.Println("input type error")
-		return
-	}
+	message = checkMessageObject(message)
 
 	body.Messages = append(body.Messages, message)
 	dataByte, err := json.Marshal(body)
