@@ -76,19 +76,19 @@ func parseResult(str string) interface{} {
 	if strings.HasPrefix(str, "$image$") {
 		str = strings.Replace(str, "$image$", "", 1)
 		strs := strings.Split(str, ";")
-		m = &line.ImageMessage{
+		m = line.ImageMessage{
 			OriginalContentURL: strs[0],
 			PreviewImageURL:    strs[1],
 		}
 	} else if strings.HasPrefix(str, "$video$") {
 		str = strings.Replace(str, "$video$", "", 1)
 		strs := strings.Split(str, ";")
-		m = &line.VideoMessage{
+		m = line.VideoMessage{
 			OriginalContentURL: strs[0],
 			PreviewImageURL:    strs[1],
 		}
 	} else {
-		m = &line.TextMessage{
+		m = line.TextMessage{
 			Text: str,
 		}
 	}
