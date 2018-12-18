@@ -28,6 +28,8 @@ func selectAct(cmd, sub, txt string, s *lineobj.SourceObject) (res string) {
 		return delTwitchChannel(sub, txt, s)
 	case "image":
 		return fmt.Sprintf("$image$%s", sub)
+	case "video":
+		return fmt.Sprintf("$video$%s", sub)
 	case "addyoutube":
 		return addYoutubeChannel(sub, txt, s)
 	case "delyoutube":
