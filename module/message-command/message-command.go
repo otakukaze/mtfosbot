@@ -1,7 +1,6 @@
 package msgcmd
 
 import (
-	"log"
 	"regexp"
 	"strings"
 
@@ -93,7 +92,6 @@ func parseResult(str string) interface{} {
 		}
 	}
 
-	log.Println("command result ::::: ", m)
 	return m
 }
 
@@ -115,6 +113,5 @@ func runCMD(txt, c string, s *lineobj.SourceObject) (res string) {
 			res = strings.Replace(res, v[0], cmdRes, 1)
 		}
 	}
-	log.Println("run cmd ::::: ", res)
 	return
 }
