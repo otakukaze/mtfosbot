@@ -62,11 +62,16 @@ func ToMap(ss interface{}) map[string]interface{} {
 	smap := make(map[string]interface{})
 	mtag := regexp.MustCompile(`cc:\"(.+)\"`)
 
+	re := regexp.MustCompile(`^[A-Z]`)
+
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		tag := string(t.Type().Field(i).Tag)
 		str := mtag.FindStringSubmatch(tag)
 		name := t.Type().Field(i).Name
+		if !re.Match([]byte(name)) {
+			continue
+		}
 		leveling := false
 		if len(str) > 1 {
 			strArr := strings.Split(str[1], ",")
