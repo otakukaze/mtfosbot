@@ -14,6 +14,11 @@ import (
 var client *irc.Client
 var queue *QueueList
 var channels []string
+var queueRunning bool
+
+func init() {
+	queueRunning = false
+}
 
 // InitIRC -
 func InitIRC() {
@@ -140,6 +145,10 @@ func LeaveAllChannel() {
 }
 
 func runQueue() {
+	if queueRunning == true {
+		return
+	}
+	queueRunning = true
 	go func() {
 		cnt := 0
 		for {
