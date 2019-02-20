@@ -6,6 +6,7 @@ import (
 
 	"git.trj.tw/golang/mtfosbot/module/config"
 	"git.trj.tw/golang/mtfosbot/module/context"
+	"git.trj.tw/golang/mtfosbot/module/utils"
 	"git.trj.tw/golang/mtfosbot/router/api"
 	"git.trj.tw/golang/mtfosbot/router/google"
 	"git.trj.tw/golang/mtfosbot/router/line"
@@ -67,6 +68,12 @@ func SetRoutes(r *gin.Engine) {
 
 	apiGroup := r.Group("/api")
 	{
+		apiGroup.GET("/memory", func(c *gin.Context) {
+			mem := utils.GetMemoryUsage()
+			c.JSON(200, gin.H{
+				"runtime": utils.ToMap(mem),
+			})
+		})
 		apiGroup.POST("/login", context.PatchCtx(api.UserLogin))
 		apiGroup.POST("/logout", context.PatchCtx(api.UserLogout))
 		apiGroup.GET("/line/logs", context.PatchCtx(api.CheckSession), context.PatchCtx(api.GetLineMessageLog))

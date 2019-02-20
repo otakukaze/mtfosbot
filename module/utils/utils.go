@@ -169,3 +169,56 @@ func CheckExists(filePath string, allowDir bool) bool {
 	}
 	return true
 }
+
+// MemoryUsage -
+type MemoryUsage struct {
+	Alloc        uint64 `json:"alloc" cc:"alloc"`
+	TotalAlloc   uint64 `json:"total_alloc" cc:"total_alloc"`
+	Sys          uint64 `json:"sys" cc:"sys"`
+	Lookups      uint64 `json:"lookups" cc:"lookups"`
+	Mallocs      uint64 `json:"mallocs" cc:"mallocs"`
+	Frees        uint64 `json:"frees" cc:"frees"`
+	HeapAlloc    uint64 `json:"heap_alloc" cc:"heap_alloc"`
+	HeapSys      uint64 `json:"heap_sys" cc:"heap_sys"`
+	HeapIdle     uint64 `json:"heap_idle" cc:"heap_idle"`
+	HeapInuse    uint64 `json:"heap_inuse" cc:"heap_inuse"`
+	HeapReleased uint64 `json:"heap_released" cc:"heap_released"`
+	HeapObjects  uint64 `json:"heap_objects" cc:"heap_objects"`
+	StackInuse   uint64 `json:"stack_inuse" cc:"stack_inuse"`
+	StackSys     uint64 `json:"stack_sys" cc:"stack_sys"`
+	GCSys        uint64 `json:"gc_sys" cc:"gc_sys"`
+	OtherSys     uint64 `json:"other_sys" cc:"other_sys"`
+	NextGC       uint64 `json:"next_gc" cc:"next_gc"`
+	LastGC       uint64 `json:"last_gc" cc:"last_gc"`
+	NumGC        uint32 `json:"num_gc" cc:"num_gc"`
+	NumForcedGC  uint32 `json:"num_forced_gc" cc:"num_forced_gc"`
+}
+
+// GetMemoryUsage -
+func GetMemoryUsage() MemoryUsage {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	u := MemoryUsage{
+		Alloc:        m.Alloc,
+		TotalAlloc:   m.TotalAlloc,
+		Sys:          m.Sys,
+		Lookups:      m.Lookups,
+		Mallocs:      m.Mallocs,
+		Frees:        m.Frees,
+		HeapAlloc:    m.HeapAlloc,
+		HeapSys:      m.HeapSys,
+		HeapIdle:     m.HeapIdle,
+		HeapInuse:    m.HeapInuse,
+		HeapReleased: m.HeapReleased,
+		HeapObjects:  m.HeapObjects,
+		StackSys:     m.StackSys,
+		StackInuse:   m.StackInuse,
+		GCSys:        m.GCSys,
+		OtherSys:     m.OtherSys,
+		NextGC:       m.NextGC,
+		LastGC:       m.LastGC,
+		NumGC:        m.NumGC,
+		NumForcedGC:  m.NumForcedGC,
+	}
+	return u
+}
