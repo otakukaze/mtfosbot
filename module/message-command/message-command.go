@@ -51,9 +51,13 @@ func ParseLineMsg(txt, replyToken string, source *lineobj.SourceObject) {
 			return
 		}
 
-		str := runCMD(strings.Join(strs[1:], " "), c.Message, source)
-		m := parseResult(str)
-		line.ReplyMessage(replyToken, m)
+		resStrs := runCMD(strings.Join(strs[1:], " "), c.Message, source)
+		msgs := make([]interface{}, 0)
+		for _, v := range resStrs {
+			m := parseResult(v)
+			msgs = append(msgs, m)
+		}
+		line.ReplyMessage(replyToken, msgs...)
 
 	} else {
 		// key cmd
@@ -62,9 +66,13 @@ func ParseLineMsg(txt, replyToken string, source *lineobj.SourceObject) {
 			return
 		}
 
-		str := runCMD(strings.Join(strs[1:], " "), c.Message, source)
-		m := parseResult(str)
-		line.ReplyMessage(replyToken, m)
+		resStrs := runCMD(strings.Join(strs[1:], " "), c.Message, source)
+		msgs := make([]interface{}, 0)
+		for _, v := range resStrs {
+			m := parseResult(v)
+			msgs = append(msgs, m)
+		}
+		line.ReplyMessage(replyToken, msgs...)
 
 	}
 }
@@ -95,23 +103,31 @@ func parseResult(str string) interface{} {
 	return m
 }
 
-func runCMD(txt, c string, s *lineobj.SourceObject) (res string) {
-	cmdAct := parseCMD(c)
-	if len(cmdAct) == 0 {
-		return c
+func runCMD(txt, c string, s *lineobj.SourceObject) (res []string) {
+	cmds := strings.Split(c, "$#$")
+	if len(cmds) == 0 {
+		return
 	}
-	res = c
-	for _, v := range cmdAct {
-		if len(v) > 1 {
-			// run cmd
-			m := strings.Split(v[1], "=")
-			sub := ""
-			if len(m) > 1 {
-				sub = strings.Join(m[1:], " ")
-			}
-			cmdRes := selectAct(m[0], sub, txt, s)
-			res = strings.Replace(res, v[0], cmdRes, 1)
+	for _, c := range cmds {
+		cmdAct := parseCMD(c)
+		if len(cmdAct) == 0 {
+			res = append(res, c)
+			continue
 		}
+		tmpRes := c
+		for _, v := range cmdAct {
+			if len(v) > 1 {
+				// run cmd
+				m := strings.Split(v[1], "=")
+				sub := ""
+				if len(m) > 1 {
+					sub = strings.Join(m[1:], " ")
+				}
+				cmdRes := selectAct(m[0], sub, txt, s)
+				tmpRes = strings.Replace(tmpRes, v[0], cmdRes, 1)
+			}
+		}
+		res = append(res, tmpRes)
 	}
 	return
 }

@@ -104,9 +104,9 @@ func checkMessageObject(m interface{}) interface{} {
 }
 
 // PushMessage -
-func PushMessage(target string, message interface{}) {
+func PushMessage(target string, message ...interface{}) {
 	log.Println("push target :::: ", target)
-	if len(target) == 0 {
+	if len(target) == 0 || len(message) == 0 {
 		return
 	}
 	urlPath := "/v2/bot/message/push"
@@ -115,9 +115,19 @@ func PushMessage(target string, message interface{}) {
 		To: target,
 	}
 
-	message = checkMessageObject(message)
+	checked := make([]interface{}, 0)
+	for _, v := range message {
+		tmp := checkMessageObject(v)
+		if tmp == nil {
+			continue
+		}
+		checked = append(checked, tmp)
+	}
 
-	body.Messages = append(body.Messages, message)
+	body.Messages = append(body.Messages, checked...)
+	if len(body.Messages) > 5 {
+		body.Messages = body.Messages[:5]
+	}
 	dataByte, err := json.Marshal(body)
 	if err != nil {
 		log.Println("to json error ::::", err)
@@ -153,8 +163,8 @@ func PushMessage(target string, message interface{}) {
 }
 
 // ReplyMessage -
-func ReplyMessage(replyToken string, message interface{}) {
-	if len(replyToken) == 0 {
+func ReplyMessage(replyToken string, message ...interface{}) {
+	if len(replyToken) == 0 || len(message) == 0 {
 		return
 	}
 	urlPath := "/v2/bot/message/reply"
@@ -163,9 +173,19 @@ func ReplyMessage(replyToken string, message interface{}) {
 		ReplyToken: replyToken,
 	}
 
-	message = checkMessageObject(message)
+	checked := make([]interface{}, 0)
+	for _, v := range message {
+		tmp := checkMessageObject(v)
+		if tmp == nil {
+			continue
+		}
+		checked = append(checked, tmp)
+	}
 
-	body.Messages = append(body.Messages, message)
+	body.Messages = append(body.Messages, checked...)
+	if len(body.Messages) > 5 {
+		body.Messages = body.Messages[:5]
+	}
 	dataByte, err := json.Marshal(body)
 	if err != nil {
 		return
