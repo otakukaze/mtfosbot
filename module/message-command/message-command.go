@@ -104,6 +104,7 @@ func parseResult(str string) interface{} {
 }
 
 func runCMD(txt, c string, s *lineobj.SourceObject) (res []string) {
+	// TODO: 把多重回覆指令 回應內容獨立資料表
 	cmds := strings.Split(c, "$#$")
 	if len(cmds) == 0 {
 		return
