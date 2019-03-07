@@ -4,3 +4,4 @@ config.yml
 module/schema/static.go*.swp
 module/schema/static.go
 *.swp
+mtfosbot
