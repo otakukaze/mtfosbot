@@ -94,6 +94,7 @@ func QueryYoutubeName(id string) (n string, err error) {
 	}
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	fmt.Println("show yt resp body :: ", string(bodyBytes))
 	if err != nil {
 		return "", err
 	}

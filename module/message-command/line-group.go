@@ -278,7 +278,7 @@ func addYoutubeChannel(sub, txt string, s *lineobj.SourceObject) (res string) {
 	}
 	ytName, err := googleapi.QueryYoutubeName(args[0])
 	if err != nil || len(ytName) == 0 {
-		fmt.Println("get youtube channel name fail :: ", err)
+		fmt.Println("get youtube channel name fail :: ", err, ytName)
 		return "get youtube channel name fail"
 	}
 
