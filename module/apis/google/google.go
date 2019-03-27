@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"git.trj.tw/golang/mtfosbot/module/apis"
-	"git.trj.tw/golang/mtfosbot/module/utils"
 	jsoniter "github.com/json-iterator/go"
 
 	"git.trj.tw/golang/mtfosbot/module/config"
@@ -52,11 +51,11 @@ func getHeaders(token ...interface{}) map[string]string {
 // ChannelItem -
 type ChannelItem struct {
 	ID      string         `json:"id"`
-	Sinppet ChannelSinppet `json:"sinppet"`
+	Snippet ChannelSnippet `json:"snippet"`
 }
 
-// ChannelSinppet -
-type ChannelSinppet struct {
+// ChannelSnippet -
+type ChannelSnippet struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	CustomURL   string `json:"customUrl"`
@@ -99,7 +98,6 @@ func QueryYoutubeName(id string) (n string, err error) {
 	}
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	fmt.Println("body ::: ", string(bodyBytes))
 	if err != nil {
 		return "", err
 	}
@@ -109,7 +107,6 @@ func QueryYoutubeName(id string) (n string, err error) {
 	}{}
 
 	err = json.Unmarshal(bodyBytes, &apiRes)
-	fmt.Println("api resp ::: ", utils.ToMap(apiRes))
 	if err != nil {
 		return "", err
 	}
@@ -119,10 +116,8 @@ func QueryYoutubeName(id string) (n string, err error) {
 	}
 
 	for _, v := range apiRes.Items {
-		fmt.Println("data :::: ", v)
 		if v.ID == id {
-			fmt.Println("id match ::: ", v.Sinppet)
-			return v.Sinppet.Title, nil
+			return v.Snippet.Title, nil
 		}
 	}
 
