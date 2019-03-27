@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"git.trj.tw/golang/mtfosbot/module/apis"
+	"git.trj.tw/golang/mtfosbot/module/utils"
 	jsoniter "github.com/json-iterator/go"
 
 	"git.trj.tw/golang/mtfosbot/module/config"
@@ -108,6 +109,7 @@ func QueryYoutubeName(id string) (n string, err error) {
 	}{}
 
 	err = json.Unmarshal(bodyBytes, &apiRes)
+	fmt.Println("api resp ::: ", utils.ToMap(apiRes))
 	if err != nil {
 		return "", err
 	}
