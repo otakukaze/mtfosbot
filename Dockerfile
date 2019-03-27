@@ -1,4 +1,4 @@
-FROM golang:1.11-alpine3.8 as builder
+FROM golang:1.12.1-alpine as builder
 WORKDIR /go/src/git.trj.tw/golang/mtfosbot
 RUN apk add --no-cache make git \
   && go get -u github.com/otakukaze/go-bindata/...
