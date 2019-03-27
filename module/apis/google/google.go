@@ -113,7 +113,9 @@ func QueryYoutubeName(id string) (n string, err error) {
 	}
 
 	for _, v := range apiRes.Items {
+		fmt.Println("data :::: ", v)
 		if v.ID == id {
+			fmt.Println("id match ::: ", v.Sinppet)
 			return v.Sinppet.Title, nil
 		}
 	}
