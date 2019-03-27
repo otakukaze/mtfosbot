@@ -13,7 +13,7 @@ require (
 	github.com/go-irc/irc v2.1.0+incompatible
 	github.com/gorilla/sessions v1.1.3 // indirect
 	github.com/jmoiron/sqlx v1.2.0
-	github.com/json-iterator/go v1.1.5 // indirect
+	github.com/json-iterator/go v1.1.6
 	github.com/lib/pq v1.0.0
 	github.com/mailru/easyjson v0.0.0-20180823135443-60711f1a8329 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect

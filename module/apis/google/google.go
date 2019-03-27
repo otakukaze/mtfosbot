@@ -1,7 +1,6 @@
 package google
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -10,11 +9,13 @@ import (
 	"strings"
 
 	"git.trj.tw/golang/mtfosbot/module/apis"
+	jsoniter "github.com/json-iterator/go"
 
 	"git.trj.tw/golang/mtfosbot/module/config"
 )
 
 var baseURL = "https://www.googleapis.com"
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 func getURL(p string, querystring ...interface{}) (string, bool) {
 	u, err := url.Parse(baseURL)
@@ -94,7 +95,6 @@ func QueryYoutubeName(id string) (n string, err error) {
 	}
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	fmt.Println("show yt resp body :: ", string(bodyBytes))
 	if err != nil {
 		return "", err
 	}
