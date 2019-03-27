@@ -50,8 +50,8 @@ func getHeaders(token ...interface{}) map[string]string {
 
 // ChannelItem -
 type ChannelItem struct {
-	ID      string         `json:"id"`
-	Sinppet ChannelSinppet `json:"sinppet"`
+	ID      string          `json:"id"`
+	Sinppet *ChannelSinppet `json:"sinppet"`
 }
 
 // ChannelSinppet -
@@ -98,12 +98,13 @@ func QueryYoutubeName(id string) (n string, err error) {
 	}
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	fmt.Println("body ::: ", bodyBytes)
 	if err != nil {
 		return "", err
 	}
 
 	apiRes := struct {
-		Items []ChannelItem `json:"items"`
+		Items []*ChannelItem `json:"items"`
 	}{}
 
 	err = json.Unmarshal(bodyBytes, &apiRes)
